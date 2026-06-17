@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OurCompanion.Application
 {
-    internal class DependencyInjection
+    public class DependencyInjection
     {
     }
 }
