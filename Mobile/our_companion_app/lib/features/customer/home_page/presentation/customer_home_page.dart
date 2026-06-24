@@ -5,7 +5,7 @@ import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/features/customer/home_page/widgets/customer_search_location.dart';
 import 'package:our_companion_app/core/providers/theme_provider.dart';
 
-class CustomerHomePage extends ConsumerStatefulWidget {
+class CustomerHomePage extends ConsumerStatefulWidget {  
   const CustomerHomePage({super.key});
 
   @override
@@ -52,7 +52,7 @@ class _CustomerHomePageState extends ConsumerState<CustomerHomePage> {
                   isDarkMode ? Icons.light_mode : Icons.dark_mode,
                   color: isDarkMode ? Colors.yellow : Colors.grey[800],
                 ),
-                onPressed: () {
+                onPressed: () {  
                   ref.read(themeProvider.notifier).state = isDarkMode
                       ? ThemeMode.light
                       : ThemeMode.dark;

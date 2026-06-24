@@ -56,14 +56,15 @@ class CustomerServicePage extends ConsumerWidget {
                     ServiceCard(
                       title: 'Travel Companion',
                       icon: Icons.flight_takeoff_outlined,
-                      description: 'Commute assistance',
+                      description: '',
+                     imagePath: 'assets/images/travaling_companion.png', 
                     ),
                     SizedBox(height: 16),
                     ServiceCard(
                       title: 'Elderly Companion',
                       icon: Icons.elderly_outlined,
                       description: 'Social care & wellness',
-                      imagePath: 'assets/images/eldery_companion.png',
+                      imagePath: 'assets/images/companion_elders.png',
                     ),
                     SizedBox(height: 16),
                     ServiceCard(
