@@ -26,7 +26,7 @@ class AppColors {
 
 const lightColors = AppColors(
   primary: Color(0xFF14B8A6),
-  secondary: Color.fromARGB(255, 0, 44, 39),
+  secondary: Color.fromARGB(255, 0, 49, 44),
   accent: Colors.teal,
   background: Color(0xFFF8FAFC),
   surface: Color(0xFFFFFFFF),

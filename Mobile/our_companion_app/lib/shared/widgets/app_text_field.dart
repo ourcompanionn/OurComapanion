@@ -16,6 +16,7 @@ class AppTextField extends ConsumerWidget {
   final double? letterSpacing;
   final TextAlign textAlign;
   final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
 
   const AppTextField({
     super.key,
@@ -31,6 +32,7 @@ class AppTextField extends ConsumerWidget {
     this.letterSpacing,
     this.textAlign = TextAlign.start,
     this.onTap,
+    this.onChanged,
   });
 
   @override
@@ -42,6 +44,7 @@ class AppTextField extends ConsumerWidget {
       keyboardType: keyboardType,
       readOnly: readOnly,
       onTap: onTap,
+      onChanged: onChanged,
       maxLength: maxLength,
       textAlign: textAlign,
       style: GoogleFonts.poppins(letterSpacing: letterSpacing),
