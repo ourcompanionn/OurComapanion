@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
 import 'package:our_companion_app/features/onboarding/presentation/controller/worker_category_controller.dart';
+import 'package:our_companion_app/features/onboarding/presentation/providers/profile_provider.dart';
 import 'package:our_companion_app/features/onboarding/presentation/widgets/category_card.dart';
 import 'package:our_companion_app/features/onboarding/presentation/widgets/category_chip.dart';
 import 'package:our_companion_app/shared/widgets/app_button.dart';
@@ -30,7 +30,7 @@ class WorkerCategoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
-    final signupState = ref.watch(signupProvider);
+    final profileState = ref.watch(profileProvider);
 
     return Scaffold(
       backgroundColor: appColors.background,
@@ -72,21 +72,21 @@ class WorkerCategoryPage extends ConsumerWidget {
                 description:
                     'Support with hospital visits, shopping, and companionship',
                 icon: Icons.people_outline,
-                isExpanded: signupState.showCompanion,
+                isExpanded: profileState.showCompanion,
                 onTap: () =>
-                    ref.read(signupProvider.notifier).toggleCompanion(),
+                    ref.read(profileProvider.notifier).toggleCompanion(),
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 10,
                   children: _companionServices.map((service) {
-                    final isSelected = signupState.selectedCategories.contains(
+                    final isSelected = profileState.selectedCategories.contains(
                       service,
                     );
                     return CategoryChip(
                       label: service,
                       isSelected: isSelected,
                       onTap: () => ref
-                          .read(signupProvider.notifier)
+                          .read(profileProvider.notifier)
                           .toggleCategory(service),
                     );
                   }).toList(),
@@ -98,20 +98,20 @@ class WorkerCategoryPage extends ConsumerWidget {
                 description:
                     'Technical tasks like plumbing, electric wiring, and painting',
                 icon: Icons.build_outlined,
-                isExpanded: signupState.showSkilled,
-                onTap: () => ref.read(signupProvider.notifier).toggleSkilled(),
+                isExpanded: profileState.showSkilled,
+                onTap: () => ref.read(profileProvider.notifier).toggleSkilled(),
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 10,
                   children: _skilledServices.map((service) {
-                    final isSelected = signupState.selectedCategories.contains(
+                    final isSelected = profileState.selectedCategories.contains(
                       service,
                     );
                     return CategoryChip(
                       label: service,
                       isSelected: isSelected,
                       onTap: () => ref
-                          .read(signupProvider.notifier)
+                          .read(profileProvider.notifier)
                           .toggleCategory(service),
                     );
                   }).toList(),
@@ -120,7 +120,7 @@ class WorkerCategoryPage extends ConsumerWidget {
 
               const SizedBox(height: 48),
 
-              if (signupState.isLoading)
+              if (profileState.isLoading)
                 Center(
                   child: CircularProgressIndicator(color: appColors.accent),
                 )

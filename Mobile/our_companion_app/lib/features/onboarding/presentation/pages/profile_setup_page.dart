@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
+import 'package:our_companion_app/features/auth/provider/auth_provider.dart';
+import 'package:our_companion_app/features/auth/provider/auth_state.dart';
 import 'package:our_companion_app/features/onboarding/presentation/controller/profile_setup_controller.dart';
+import 'package:our_companion_app/features/onboarding/presentation/providers/profile_provider.dart';
 import 'package:our_companion_app/features/onboarding/presentation/widgets/gender_card.dart';
 import 'package:our_companion_app/shared/widgets/app_button.dart';
 import 'package:our_companion_app/shared/widgets/app_text_field.dart';
+
 
 class ProfileSetupPage extends ConsumerStatefulWidget {
   const ProfileSetupPage({super.key});
@@ -33,7 +36,8 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
   @override
   Widget build(BuildContext context) {
     final appColors = ref.watch(appColorsProvider);
-    final signupState = ref.watch(signupProvider);
+    final authState = ref.watch(authProvider);
+    final profileState =ref.watch(profileProvider);
     final controller = ProfileSetupController(
       ref: ref,
       context: context,
@@ -99,7 +103,7 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                 ),
                 const SizedBox(height: 28),
 
-                if (signupState.signupMethod == SignupMethod.phone) ...[
+                if (authState.signupMethod == SignupMethod.phone) ...[
                   Text(
                     'Email Address',
                     style: GoogleFonts.poppins(
@@ -169,31 +173,31 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                     GenderCard(
                       label: 'Male',
                       icon: Icons.male_outlined,
-                      isSelected: signupState.gender == 'Male',
+                      isSelected: profileState.gender == 'Male',
                       onTap: () =>
-                          ref.read(signupProvider.notifier).setGender('Male'),
+                          ref.read(profileProvider.notifier).setGender('Male'),
                     ),
                     const SizedBox(width: 12),
                     GenderCard(
                       label: 'Female',
                       icon: Icons.female_outlined,
-                      isSelected: signupState.gender == 'Female',
+                      isSelected: profileState.gender == 'Female',
                       onTap: () =>
-                          ref.read(signupProvider.notifier).setGender('Female'),
+                          ref.read(profileProvider.notifier).setGender('Female'),
                     ),
                     const SizedBox(width: 12),
                     GenderCard(
                       label: 'Other',
                       icon: Icons.transgender_outlined,
-                      isSelected: signupState.gender == 'Other',
+                      isSelected: profileState.gender == 'Other',
                       onTap: () =>
-                          ref.read(signupProvider.notifier).setGender('Other'),
+                          ref.read(profileProvider.notifier).setGender('Other'),
                     ),
                   ],
                 ),
                 const SizedBox(height: 50),
 
-                if (signupState.isLoading)
+                if (profileState.isLoading)
                   Center(
                     child: CircularProgressIndicator(color: appColors.accent),
                   )

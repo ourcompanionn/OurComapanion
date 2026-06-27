@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
+import 'package:our_companion_app/features/auth/provider/auth_state.dart';
 
 class SignupMethodTabs extends ConsumerWidget {
   final SignupMethod selectedMethod;

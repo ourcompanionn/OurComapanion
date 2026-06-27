@@ -8,7 +8,8 @@ import 'package:our_companion_app/features/auth/presentation/widgets/signup_meth
 import 'package:our_companion_app/features/auth/presentation/widgets/signup_header.dart';
 import 'package:our_companion_app/features/auth/presentation/widgets/otp_section.dart';
 import 'package:our_companion_app/features/auth/presentation/widgets/signup_footer.dart';
-import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
+import 'package:our_companion_app/features/auth/provider/auth_provider.dart';
+import 'package:our_companion_app/features/auth/provider/auth_state.dart';
 import 'package:our_companion_app/shared/widgets/app_button.dart';
 import 'package:our_companion_app/shared/widgets/app_text_field.dart';
 
@@ -37,7 +38,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   @override
   Widget build(BuildContext context) {
     final appColors = ref.watch(appColorsProvider);
-    final signupState = ref.watch(signupProvider);
+    final signupState = ref.watch(authProvider);
 
     final controller = SignupController(
       ref: ref,
@@ -61,7 +62,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   SignupMethodTabs(
                     selectedMethod: signupState.signupMethod,
                     onMethodChanged: (method) {
-                      ref.read(signupProvider.notifier).setSignupMethod(method);
+                      ref.read(authProvider.notifier).setSignupMethod(method);
 
                       _phoneController.clear();
                       _emailController.clear();
@@ -109,7 +110,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
-                            ref.read(signupProvider.notifier).editContact();
+                            ref.read(authProvider.notifier).editContact();
 
                             _otpController.clear();
                           },
@@ -166,7 +167,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
-                            ref.read(signupProvider.notifier).editContact();
+                            ref.read(authProvider.notifier).editContact();
 
                             _otpController.clear();
                           },
@@ -234,7 +235,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
                     const SizedBox(height: 20),
 
-                    GoogleSignInButton(onPressed: controller.googleSignIn),
+                    GoogleSignInButton(onPressed: controller.googleLogin),
                   ],
                 ],
 

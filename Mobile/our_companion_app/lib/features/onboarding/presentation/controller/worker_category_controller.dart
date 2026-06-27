@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/core/routes/app_routes.dart';
-import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
+import 'package:our_companion_app/features/onboarding/presentation/providers/profile_provider.dart';
 import 'package:our_companion_app/shared/widgets/app_snackbar.dart';
 
 class WorkerCategoryController {
@@ -13,8 +13,8 @@ class WorkerCategoryController {
   WorkerCategoryController({required this.ref, required this.context});
 
   void onComplete() {
-    final signupState = ref.read(signupProvider);
-    if (signupState.selectedCategories.isEmpty) {
+    final profileState = ref.read(profileProvider);
+    if (profileState.selectedCategories.isEmpty) {
       AppToast.show(
         context,
         message: 'Please select at least one service category',
@@ -24,7 +24,7 @@ class WorkerCategoryController {
       return;
     }
 
-    ref.read(signupProvider.notifier).completeSignup((message) {
+    ref.read(profileProvider.notifier).completeSignup((message) {
       AppToast.show(
         context,
         message: message,

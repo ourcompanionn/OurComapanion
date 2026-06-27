@@ -129,4 +129,4 @@ class CustomerProfilePage extends ConsumerWidget {
       trailing: Icon(Icons.chevron_right, color: appColors.secondaryText),
     );
   }
-}
+} 

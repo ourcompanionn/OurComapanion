@@ -12,7 +12,7 @@ class AuthRepository {
     await Future.delayed(const Duration(seconds: 2));
 
     if (otp != "123456") {
-      throw Exception("Invalid OTP");
+       throw Exception("Invalid OTP");
     }
 
     final exists = value == "9999999999" || value == "existing@gmail.com";
