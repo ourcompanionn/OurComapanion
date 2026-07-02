@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace OurCompanion.Application.Services
 {
@@ -22,13 +23,22 @@ namespace OurCompanion.Application.Services
         private readonly ITokenService _tokenService;
         private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
 
-        public AuthService(IUnitOfWork unitOfWork,ITokenService tokenService,INotificationService notificationService,IMapper mapper)
+        public AuthService(IUnitOfWork unitOfWork,ITokenService tokenService,INotificationService notificationService,IMapper mapper,IMemoryCache cache)
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _notificationService = notificationService;
             _mapper = mapper;
+            _cache = cache;
+        }
+
+        // helper class to store data of otp
+        private class OtpCacheData
+        {
+            public string Otp { get; set; } = string.Empty;
+            public int Attempts { get; set; } = 0;
         }
 
         //request otp
@@ -36,70 +46,45 @@ namespace OurCompanion.Application.Services
         {
             var otpcode = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 900000).ToString();
 
-            var hashotp = HashOtp(otpcode);
+            //var hashotp = HashOtp(otpcode); // no need of hashing
 
-            var otpVerification = new OtpVerification
-            {
-                Identifier = request.PhoneNumber,
-                OtpHash = hashotp,
-                Purpose = "Authentication",
-                AttemptCount = 0,
-                IsUsed = false,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(5),
-                LastUpdatedAt = DateTime.UtcNow
-            };
+            var cacheData = new OtpCacheData { Otp = otpcode, Attempts = 0 };
 
-            await _unitOfWork.OtpVerifications.AddAsync(otpVerification);
-            await _unitOfWork.SaveAsync();
+            _cache.Set("OTP_" + request.PhoneNumber, cacheData, TimeSpan.FromMinutes(5));
 
             await _notificationService.SendOtpAsync(null, request.PhoneNumber, otpcode);
             return true;
-
         }
         
         public async Task<AuthResult> VerifyOtpAsync(VerifyOtpDto request)
         {
-            var hashedOtp=HashOtp(request.OtpCode);
+            var hashedOtp = request.OtpCode;
 
-            var otpRecords = await _unitOfWork.OtpVerifications.FindAsync(o =>
-            o.Identifier == request.PhoneNumber &&
-            o.IsUsed==false &&
-            o.ExpiresAt > DateTime.UtcNow);
-
-            var latestOtpRecord = otpRecords.OrderByDescending(o => o.LastUpdatedAt).FirstOrDefault();
-
-            if (latestOtpRecord == null)
+            if (!_cache.TryGetValue("OTP_" + request.PhoneNumber, out OtpCacheData? cachedOtp) || cachedOtp == null)
             {
-                throw new UnauthorizedException("No active OTP found. Please request a new one.");
+                throw new UnauthorizedException("No active OTP found or it has expired. Please request a new one.");
             }
 
             // brute force protection, check if they are locked out
 
-            if (latestOtpRecord.AttemptCount >= 5)
+            if (cachedOtp.Attempts >= 5)
             {
-                latestOtpRecord.IsUsed = true; // Lock it permanently
-                _unitOfWork.OtpVerifications.Update(latestOtpRecord);
-                await _unitOfWork.SaveAsync();
-                throw new UnauthorizedException("Too many failed attempts. Please request a new OTP.");
+                _cache.Remove("OTP_" + request.PhoneNumber); // Destroy the OTP
+                throw new UnauthorizedException("Too many failed attempts. Please try again later");
             }
 
             // Check if the hashes actually match
-            if (latestOtpRecord.OtpHash != hashedOtp)
+            if (cachedOtp.Otp != hashedOtp)
             {
-                // if it is wrong, increment and save
-                latestOtpRecord.AttemptCount += 1;
-                latestOtpRecord.LastUpdatedAt = DateTime.UtcNow;
-                _unitOfWork.OtpVerifications.Update(latestOtpRecord);
-                await _unitOfWork.SaveAsync();
-
-                throw new UnauthorizedException($"Invalid OTP. You have {5 - latestOtpRecord.AttemptCount} attempts remaining.");
+                cachedOtp.Attempts += 1;
+                _cache.Set("OTP_" + request.PhoneNumber, cachedOtp, TimeSpan.FromMinutes(5)); // Update attempts in RAM
+                throw new UnauthorizedException($"Invalid OTP. You have {5 - cachedOtp.Attempts} attempts remaining.");
             }
 
             //if it is correct
-            latestOtpRecord.IsUsed = true;
-            latestOtpRecord.LastUpdatedAt = DateTime.UtcNow;
-            _unitOfWork.OtpVerifications.Update(latestOtpRecord);
-            await _unitOfWork.SaveAsync();
+            _cache.Remove("OTP_" + request.PhoneNumber);
+
+            _cache.Set("VERIFIED_" + request.PhoneNumber, true, TimeSpan.FromMinutes(15));
 
             // Route the user (Existing User vs New User)
             var existingAccount = await _unitOfWork.Accounts.FindSingleAsync(a => a.PhoneNumber == request.PhoneNumber);
@@ -132,13 +117,10 @@ namespace OurCompanion.Application.Services
         public async Task<AuthResult> RegisterUserAsync(RegisterUserDto request)
         {
             // is phone number successfully verified in the last 15 minutes
-            var otpverified = await _unitOfWork.OtpVerifications.FindSingleAsync(o =>
-            o.Identifier == request.PhoneNumber &&
-            o.IsUsed == true &&
-            o.LastUpdatedAt > DateTime.UtcNow.AddMinutes(-15));
-
-            if (otpverified == null)
+            if (!_cache.TryGetValue("VERIFIED_" + request.PhoneNumber, out _))
+            {
                 throw new UnauthorizedException("Phone number is not verified or verification expired. Please request a new OTP.");
+            }
 
             var account = _mapper.Map<Account>(request);
             account.LastLoginAt = DateTime.UtcNow;
@@ -151,6 +133,8 @@ namespace OurCompanion.Application.Services
             ////delete old otp record
             //_unitOfWork.OtpVerifications.Delete(otpverified);
             //await _unitOfWork.SaveAsync();
+
+            _cache.Remove("VERIFIED_" + request.PhoneNumber);
 
             var accessToken= _tokenService.GenerateAccessToken(account);
             var refreshToken=_tokenService.GenerateRefreshToken();

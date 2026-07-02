@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace OurCompanion.Application
             {
                 config.AddProfile<OurCompanion.Application.Mappings.AuthMappingProfile>();
             });
+
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
         }
