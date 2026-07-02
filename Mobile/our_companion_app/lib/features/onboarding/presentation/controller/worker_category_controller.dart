@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:our_companion_app/core/constents/app_color.dart';
+import 'package:our_companion_app/core/routes/app_routes.dart';
+import 'package:our_companion_app/features/auth/provider/signup_provider.dart';
+import 'package:our_companion_app/shared/widgets/app_snackbar.dart';
+
+class WorkerCategoryController {
+  final WidgetRef ref;
+  final BuildContext context;
+
+  WorkerCategoryController({required this.ref, required this.context});
+
+  void onComplete() {
+    final signupState = ref.read(signupProvider);
+    if (signupState.selectedCategories.isEmpty) {
+      AppToast.show(
+        context,
+        message: 'Please select at least one service category',
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+      );
+      return;
+    }
+
+    ref.read(signupProvider.notifier).completeSignup((message) {
+      AppToast.show(
+        context,
+        message: message,
+        backgroundColor: ref.read(appColorsProvider).accent,
+        duration: Duration(seconds: 2),
+      );
+      context.go(AppRoutes.workerMain);
+    });
+  }
+}
