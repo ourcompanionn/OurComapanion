@@ -1,15 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using OurCompanion.API.Filters;
 using OurCompanion.API.Middleware;
 using OurCompanion.Application;
 using OurCompanion.Infrastructure;
-
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options=>
+    {
+        options.Filters.Add<ValidationFilterAttribute>(); // This manually links your custom file
+    });
+
+builder.Services.AddMemoryCache();
+
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

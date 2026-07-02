@@ -11,7 +11,6 @@ namespace OurCompanion.Application.Interfaces
     public interface IApplicationDbContext
     {
         DbSet<Account> Accounts { get; }
-        DbSet<OtpVerification> OtpVerifications { get; }
         DbSet<UserSession> UserSessions { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

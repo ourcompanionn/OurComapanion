@@ -10,7 +10,6 @@ namespace OurCompanion.Application.Interfaces.Repositories
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Account> Accounts { get; }
-        IGenericRepository<OtpVerification> OtpVerifications { get; }
         IGenericRepository<UserSession> UserSessions { get; }
 
         Task<int> SaveAsync(CancellationToken cancellationToken = default);

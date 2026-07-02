@@ -19,8 +19,6 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<OtpVerification> OtpVerifications { get; set; }
-
     public virtual DbSet<UserSession> UserSessions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -41,16 +39,6 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<OtpVerification>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__OtpVerif__3214EC077EF32538");
-
-            entity.Property(e => e.LastUpdatedAt).HasDefaultValueSql("(sysutcdatetime())");
-            entity.Property(e => e.OtpHash).HasMaxLength(255);
-            entity.Property(e => e.Purpose).HasMaxLength(20);
-
-            entity.Property(e => e.Identifier).HasMaxLength(255).IsRequired();
-        });
 
         modelBuilder.Entity<UserSession>(entity =>
         {

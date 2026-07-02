@@ -23,7 +23,7 @@ namespace OurCompanion.API.Middleware
             }
             catch (Exception ex)
             {
-                // If ANY service throws an error, this giant net catches it!
+                // If ANY service throws an error, this catches it
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -31,7 +31,7 @@ namespace OurCompanion.API.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            // Determine the HTTP Status code based on the type of Exception!
+            // Determine the HTTP Status code based on the type of Exception
             var statusCode = exception switch
             {
                 UnauthorizedException => (int)HttpStatusCode.Unauthorized, // 401
@@ -39,13 +39,16 @@ namespace OurCompanion.API.Middleware
                 _ => (int)HttpStatusCode.InternalServerError               // 500 (For unexpected crashes)
             };
             context.Response.StatusCode = statusCode;
-            // Build a beautiful JSON response for the frontend
+
+            // Build  JSON response for the frontend
+
             var response = new
             {
                 StatusCode = statusCode,
                 Message = exception.Message,
 
                 // Only show the messy stack trace if it's a critical 500 crash
+
                 Details = statusCode == 500 ? exception.StackTrace?.ToString() : null
             };
             var jsonResponse = JsonSerializer.Serialize(response);

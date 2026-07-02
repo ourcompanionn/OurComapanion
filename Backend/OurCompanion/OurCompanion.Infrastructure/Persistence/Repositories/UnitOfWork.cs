@@ -15,7 +15,6 @@ namespace OurCompanion.Infrastructure.Persistence.Repositories
 
         //store our repositories here
         public IGenericRepository<Account> Accounts { get; private set; }
-        public IGenericRepository<OtpVerification> OtpVerifications { get; private set; }
         public IGenericRepository<UserSession> UserSessions { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
@@ -24,7 +23,6 @@ namespace OurCompanion.Infrastructure.Persistence.Repositories
 
             // initialize the generic repositories for our tables
             Accounts = new GenericRepository<Account>(_context);
-            OtpVerifications = new GenericRepository<OtpVerification>(_context);
             UserSessions = new GenericRepository<UserSession>(_context);
         }
 
