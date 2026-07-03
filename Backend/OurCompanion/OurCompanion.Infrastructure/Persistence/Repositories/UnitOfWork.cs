@@ -16,6 +16,10 @@ namespace OurCompanion.Infrastructure.Persistence.Repositories
         //store our repositories here
         public IGenericRepository<Account> Accounts { get; private set; }
         public IGenericRepository<UserSession> UserSessions { get; private set; }
+        public IGenericRepository<UserProfiles> UserProfiles { get; }
+        public IGenericRepository<CompanionCategories> CompanionCategories { get; }
+        public IGenericRepository<UserFiles> UserFiles { get; }
+        public IGenericRepository<Categories> Categories { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -24,6 +28,10 @@ namespace OurCompanion.Infrastructure.Persistence.Repositories
             // initialize the generic repositories for our tables
             Accounts = new GenericRepository<Account>(_context);
             UserSessions = new GenericRepository<UserSession>(_context);
+            UserProfiles = new GenericRepository<UserProfiles>(_context);
+            CompanionCategories = new GenericRepository<CompanionCategories>(_context);
+            UserFiles = new GenericRepository<UserFiles>(_context);
+            Categories = new GenericRepository<Categories>(_context);
         }
 
 

@@ -11,6 +11,10 @@ namespace OurCompanion.Application.Interfaces.Repositories
     {
         IGenericRepository<Account> Accounts { get; }
         IGenericRepository<UserSession> UserSessions { get; }
+        IGenericRepository<UserProfiles> UserProfiles { get; }
+        IGenericRepository<CompanionCategories> CompanionCategories { get; }
+        IGenericRepository<UserFiles> UserFiles { get; }
+        IGenericRepository<Categories> Categories { get; }
 
         Task<int> SaveAsync(CancellationToken cancellationToken = default);
 

@@ -30,4 +30,6 @@ public partial class Account
     public DateTime? UpdatedAt { get; set; }
 
     public ICollection<UserSession> UserSessions { get; set; } = new List<UserSession>();
+
+    public virtual UserProfiles? UserProfile { get; set; }
 }

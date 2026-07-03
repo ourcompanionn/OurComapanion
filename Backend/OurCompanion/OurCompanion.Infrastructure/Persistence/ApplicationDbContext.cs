@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using OurCompanion.Infrastructure;
 using OurCompanion.Domain.Entities;
-using OurCompanion.Application.Interfaces;
-
 namespace OurCompanion.Infrastructure.Persistence;
 
-public partial class ApplicationDbContext : DbContext,IApplicationDbContext
+public partial class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext()
     {
@@ -17,42 +16,73 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
     {
     }
 
-    public virtual DbSet<Account> Accounts { get; set; }
+    public virtual DbSet<Categories> Categories { get; set; }
 
-    public virtual DbSet<UserSession> UserSessions { get; set; }
+    public virtual DbSet<CompanionCategories> CompanionCategories { get; set; }
+
+    public virtual DbSet<UserFiles> UserFiles { get; set; }
+
+    public virtual DbSet<UserProfiles> UserProfiles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>(entity =>
+        modelBuilder.Entity<Categories>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Accounts__3214EC07A72D3CC9");
-
-            entity.Property(e => e.AccountType).HasMaxLength(20);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
-            entity.Property(e => e.Email).HasMaxLength(200);
-            entity.Property(e => e.FirstName).HasMaxLength(100);
-            entity.Property(e => e.LastName).HasMaxLength(100);
-            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-
-        modelBuilder.Entity<UserSession>(entity =>
+        modelBuilder.Entity<CompanionCategories>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserSess__3214EC07DB613E45");
+            entity.HasIndex(e => new { e.UserProfileId, e.CategoryId }, "UQ_CompanionCategories").IsUnique();
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
-            entity.Property(e => e.DeviceIdentifier).HasMaxLength(255);
-            entity.Property(e => e.DeviceName).HasMaxLength(255);
-            entity.Property(e => e.Platform).HasMaxLength(50);
-            entity.Property(e => e.FCMToken).HasMaxLength(500);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
 
-            entity.HasOne(d => d.Account).WithMany(p => p.UserSessions)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK_UserSessions_Accounts");
+            entity.HasOne(d => d.Category).WithMany(p => p.CompanionCategories)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CompanionCategories_Categories");
+
+            entity.HasOne(d => d.UserProfile).WithMany(p => p.CompanionCategories)
+                .HasForeignKey(d => d.UserProfileId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CompanionCategories_UserProfiles");
+        });
+
+        modelBuilder.Entity<UserFiles>(entity =>
+        {
+            entity.HasIndex(e => new { e.UserProfileId, e.FileType }, "UQ_UserFiles").IsUnique();
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.FileUrl).HasMaxLength(500);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+            entity.HasOne(d => d.UserProfile).WithMany(p => p.UserFiles)
+                .HasForeignKey(d => d.UserProfileId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserFiles_UserProfiles");
+        });
+
+        modelBuilder.Entity<UserProfiles>(entity =>
+        {
+            entity.HasOne(d => d.Account)
+              .WithOne(p => p.UserProfile)
+              .HasForeignKey<UserProfiles>(d => d.AccountId)
+              .OnDelete(DeleteBehavior.ClientSetNull)
+              .HasConstraintName("FK_UserProfiles_Accounts");
+            entity.HasIndex(e => e.AccountId, "UQ_UserProfiles_AccountId").IsUnique();
+
+            entity.Property(e => e.AvgRating).HasColumnType("decimal(3, 2)");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.KycStatus).HasDefaultValue((byte)1);
+            entity.Property(e => e.Latitude).HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
         });
 
         OnModelCreatingPartial(modelBuilder);
