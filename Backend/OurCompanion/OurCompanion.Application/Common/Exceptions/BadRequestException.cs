@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace OurCompanion.Application.Common.Exceptions
 {
-    internal class AlreadyExistException : Exception
+    public class BadRequestException : Exception
     {
-        public AlreadyExistException(string? message) : base(message)
+        public BadRequestException(string? message) : base(message)
         {
         }
     }

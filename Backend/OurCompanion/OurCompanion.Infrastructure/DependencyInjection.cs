@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OurCompanion.Application.Common.Models;
 using OurCompanion.Application.Interfaces.Repositories;
 using OurCompanion.Application.Interfaces.Services;
 using OurCompanion.Application.Services;
 using OurCompanion.Infrastructure.Identity;
+using OurCompanion.Infrastructure.Notifications;
 using OurCompanion.Infrastructure.Persistence;
 using OurCompanion.Infrastructure.Persistence.Repositories;
 using OurCompanion.Infrastructure.Services;
@@ -24,7 +26,12 @@ namespace OurCompanion.Infrastructure
             // Register the Auth Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, JwtService>();
-            
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IUserFileService, UserFileService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IAdminService, AdminService>();
+
             // Register the Mock Notification Service (Logs OTPs to console for now)
             services.AddScoped<INotificationService, MockNotificationService>();
 
@@ -36,6 +43,13 @@ namespace OurCompanion.Infrastructure
             {
                 var configuration = sp.GetRequiredService<IConfiguration>();
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection"));
             });
 
             return services;
