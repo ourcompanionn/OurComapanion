@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using OurCompanion.API.Extensions;
 using OurCompanion.API.Filters;
 using OurCompanion.API.Middleware;
 using OurCompanion.Application;
@@ -18,11 +19,11 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerWithJwt();
 
 // dependency layers
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 //  Register the JWT Security
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

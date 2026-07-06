@@ -42,7 +42,15 @@ namespace OurCompanion.Infrastructure.Notifications
                     UniqueFilename = true
                 };
 
+                Console.WriteLine($"Stream Length: {fileStream.Length}");
+                Console.WriteLine($"Stream Position: {fileStream.Position}");
+
                 var result = await _cloudinary.UploadAsync(uploadParams);
+
+                Console.WriteLine($"Cloudinary Bytes: {result.Bytes}");
+                Console.WriteLine($"Width: {result.Width}");
+                Console.WriteLine($"Height: {result.Height}");
+                Console.WriteLine(result.SecureUrl);
 
                 if (result.Error != null)
                     throw new Exception(result.Error.Message);

@@ -48,12 +48,29 @@ namespace OurCompanion.Application.Services
             if (account == null)
                 throw new NotFoundException("Account not found.");
 
+            var categories = await _unitOfWork.Categories
+                 .FindAsync(c => dto.CategoryIds.Contains(c.Id) && c.IsActive);
+
+            var foundIds = categories
+                .Select(c => c.Id)
+                .ToHashSet();
+
+            var invalidIds = dto.CategoryIds
+                .Where(id => !foundIds.Contains(id))
+                .ToList();
+
+            if (invalidIds.Any())
+            {
+                throw new BadRequestException(
+                    $"Invalid or inactive category IDs: {string.Join(", ", invalidIds)}");
+            }
+
             var profile = new UserProfiles
             {
                 AccountId = accountId,
                 Gender = dto.Gender,
-                KycStatus = (byte)KycStatus.Pending,
-                BgCheckStatus = null,
+                KycStatus = (byte)KycStatus.NotSubmitted,
+                BgCheckStatus = (byte)BgCheckStatus.NotSubmitted,
                 IsOnline = null,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
@@ -62,11 +79,29 @@ namespace OurCompanion.Application.Services
             await _unitOfWork.UserProfiles.AddAsync(profile);
             await _unitOfWork.SaveAsync();
 
+
+            var companionCategories = dto.CategoryIds
+                .Select(categoryId => new CompanionCategories
+                {
+                    UserProfileId = profile.Id,
+                    CategoryId = categoryId,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                })
+                .ToList();
+
+            foreach (var companionCategory in companionCategories)
+            {
+                await _unitOfWork.CompanionCategories.AddAsync(companionCategory);
+            }
+
+            await _unitOfWork.SaveAsync();
+
             var result = _mapper.Map<UserProfileDto>(profile);
             result.FirstName = account.FirstName ?? string.Empty;
             result.LastName = account.LastName ?? string.Empty;
             result.PhoneNumber = account.PhoneNumber ?? string.Empty;
-            result.Categories = new List<CategoryDto>();
+            result.Categories = _mapper.Map<List<CategoryDto>>(categories);
 
             return result;
         }
@@ -75,6 +110,13 @@ namespace OurCompanion.Application.Services
 
         public async Task ToggleOnlineStatusAsync(int accountId)
         {
+            var account = await _unitOfWork.Accounts
+                  .GetByIdAsync(accountId);
+
+            if (account?.AccountType != "Companion")
+                throw new UnauthorizedException(
+                    "Only companions can toggle online status.");
+
             var profile = await _unitOfWork.UserProfiles
                 .FindSingleAsync(p => p.AccountId == accountId);
 
@@ -177,6 +219,13 @@ namespace OurCompanion.Application.Services
 
         public async Task UpdateCategoriesAsync(int accountId, List<int> categoryIds)
         {
+            var account = await _unitOfWork.Accounts
+                .GetByIdAsync(accountId);
+
+            if (account?.AccountType != "Companion")
+                throw new UnauthorizedException(
+                    "Only companions can update categories.");
+
             var profile = await _unitOfWork.UserProfiles
                 .FindSingleAsync(p => p.AccountId == accountId);
 
@@ -229,6 +278,13 @@ namespace OurCompanion.Application.Services
         public async Task UpdateLocationAsync(
        int accountId, UpdateLocationDto dto)
         {
+            var account = await _unitOfWork.Accounts
+                 .GetByIdAsync(accountId);
+
+            if (account?.AccountType != "Companion")
+                throw new UnauthorizedException(
+                    "Only companions can update location.");
+
             var profile = await _unitOfWork.UserProfiles
                 .FindSingleAsync(p => p.AccountId == accountId);
 

@@ -16,6 +16,10 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Account> Accounts { get; set; }
+
+    public virtual DbSet<UserSession> UserSessions { get; set; }
+
     public virtual DbSet<Categories> Categories { get; set; }
 
     public virtual DbSet<CompanionCategories> CompanionCategories { get; set; }

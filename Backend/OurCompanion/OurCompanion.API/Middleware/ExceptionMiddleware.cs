@@ -36,6 +36,8 @@ namespace OurCompanion.API.Middleware
             {
                 UnauthorizedException => (int)HttpStatusCode.Unauthorized, // 401
                 NotFoundException => (int)HttpStatusCode.NotFound,         // 404
+                AlreadyExistException => (int)HttpStatusCode.Conflict,       // 409
+                BadRequestException => (int)HttpStatusCode.BadRequest,      // 400
                 _ => (int)HttpStatusCode.InternalServerError               // 500 (For unexpected crashes)
             };
             context.Response.StatusCode = statusCode;

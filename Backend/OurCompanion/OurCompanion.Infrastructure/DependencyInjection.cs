@@ -21,7 +21,7 @@ namespace OurCompanion.Infrastructure
     public static class DependencyInjection
     {
         // The "this" keyword turns it into an Extension Method
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register the Auth Services
             services.AddScoped<IAuthService, AuthService>();
@@ -45,14 +45,10 @@ namespace OurCompanion.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddDbContext<ApplicationDbContext>((sp, options) =>
-            {
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"));
-            });
+            services.Configure<CloudinarySettings>(
+                configuration.GetSection("Cloudinary"));
 
             return services;
-        }
+        } 
     }
 }

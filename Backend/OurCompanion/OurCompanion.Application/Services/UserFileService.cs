@@ -4,6 +4,7 @@ using OurCompanion.Application.DTOs.UserProfile;
 using OurCompanion.Application.Interfaces.Repositories;
 using OurCompanion.Application.Interfaces.Services;
 using OurCompanion.Domain.Entities;
+using OurCompanion.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,30 +31,41 @@ namespace OurCompanion.Application.Services
 
         public async Task UploadFileAsync(int accountId, UploadFileDto dto)
         {
+            if (dto.FileStream == null || dto.FileStream.Length == 0)
+                throw new BadRequestException("No file provided.");
+
             var profile = await _unitOfWork.UserProfiles
                 .FindSingleAsync(p => p.AccountId == accountId);
 
             if (profile == null)
                 throw new NotFoundException("Profile not found.");
 
-            // check if file of this type already exists
             var existing = await _unitOfWork.UserFiles
                 .FindSingleAsync(f =>
                     f.UserProfileId == profile.Id &&
                     f.FileType == (byte)dto.FileType);
 
-            // upload to cloudinary
             var fileUrl = await _cloudinaryService.UploadFileAsync(
                 dto.FileStream,
                 dto.FileName,
                 dto.ContentType);
 
+            if (dto.FileType == UserFileType.KycDocument)
+            {
+                profile.KycStatus = (byte)KycStatus.Pending;
+            }
+            else if (dto.FileType == UserFileType.BgCheckDocument)
+            {
+                profile.BgCheckStatus = (byte)BgCheckStatus.Pending;
+            }
+
+            profile.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.UserProfiles.Update(profile);
+
             if (existing != null)
             {
-                // delete old file from cloudinary
                 await _cloudinaryService.DeleteFileAsync(existing.FileUrl);
 
-                // update existing row
                 existing.FileUrl = fileUrl;
                 existing.UpdatedAt = DateTime.UtcNow;
 
@@ -61,7 +73,6 @@ namespace OurCompanion.Application.Services
             }
             else
             {
-                // create new row
                 await _unitOfWork.UserFiles.AddAsync(new UserFiles
                 {
                     UserProfileId = profile.Id,

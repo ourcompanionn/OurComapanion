@@ -17,6 +17,7 @@ namespace OurCompanion.Application
             services.AddAutoMapper(config =>
             {
                 config.AddProfile<OurCompanion.Application.Mappings.AuthMappingProfile>();
+                config.AddProfile<OurCompanion.Application.Mappings.UserProfileMappingProfile>();
             });
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

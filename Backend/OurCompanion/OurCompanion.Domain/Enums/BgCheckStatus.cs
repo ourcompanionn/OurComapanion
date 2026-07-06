@@ -8,6 +8,7 @@ namespace OurCompanion.Domain.Enums
 {
     public enum BgCheckStatus
     {
+        NotSubmitted = 0,
         Pending = 1,
         Cleared = 2,
         Flagged = 3
