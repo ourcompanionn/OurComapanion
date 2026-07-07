@@ -27,8 +27,11 @@ namespace OurCompanion.Application.Services
         {
             var pending = await _unitOfWork.UserProfiles
                 .FindAsync(p =>
-                    p.KycStatus == (byte)KycStatus.Pending &&
-                    p.IsActive == true);
+                    p.IsActive &&
+                    (
+                        p.KycStatus == (byte)KycStatus.Pending ||
+                        p.BgCheckStatus == (byte)BgCheckStatus.Pending
+                    ));
 
             var result = new List<UserProfileDto>();
 
@@ -72,6 +75,21 @@ namespace OurCompanion.Application.Services
             profile.UpdatedAt = DateTime.UtcNow;
 
             _unitOfWork.UserProfiles.Update(profile);
+
+            // Verify account only when both checks are approved
+            if (profile.KycStatus == (byte)KycStatus.Approved &&
+                profile.BgCheckStatus == (byte)BgCheckStatus.Cleared)
+            {
+                var account = await _unitOfWork.Accounts
+                    .GetByIdAsync(profile.AccountId);
+
+                if (account != null)
+                {
+                    account.IsVerified = true;
+                    _unitOfWork.Accounts.Update(account);
+                }
+            }
+
             await _unitOfWork.SaveAsync();
         }
 
@@ -88,6 +106,19 @@ namespace OurCompanion.Application.Services
             profile.UpdatedAt = DateTime.UtcNow;
 
             _unitOfWork.UserProfiles.Update(profile);
+
+            if (profile.KycStatus == (byte)KycStatus.Approved &&
+                profile.BgCheckStatus == (byte)BgCheckStatus.Cleared)
+            {
+                var account = await _unitOfWork.Accounts
+                    .GetByIdAsync(profile.AccountId);
+
+                if (account != null)
+                {
+                    account.IsVerified = true;
+                    _unitOfWork.Accounts.Update(account);
+                }
+            }
             await _unitOfWork.SaveAsync();
         }
     }

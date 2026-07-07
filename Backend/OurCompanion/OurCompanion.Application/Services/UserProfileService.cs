@@ -107,7 +107,7 @@ namespace OurCompanion.Application.Services
         }
 
 
-
+   
         public async Task ToggleOnlineStatusAsync(int accountId)
         {
             var account = await _unitOfWork.Accounts

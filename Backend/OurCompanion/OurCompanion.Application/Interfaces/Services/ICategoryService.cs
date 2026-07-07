@@ -9,6 +9,8 @@ namespace OurCompanion.Application.Interfaces.Services
 {
     public interface ICategoryService
     {
+        Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto dto);
         Task<List<CategoryDto>> GetCategoriesAsync();
+        Task DeleteCategoryAsync(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OurCompanion.API.Extensions;
+using OurCompanion.Application.Common.Models;
 using OurCompanion.Application.Interfaces.Services;
 using OurCompanion.Domain.Enums;
 
@@ -30,7 +31,11 @@ namespace OurCompanion.API.Controllers
             await _fileService.UploadFileAsync(
                 User.GetAccountId(),
                 file.ToUploadFileDto(fileType));
-            return Ok("File uploaded successfully.");
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "File uploaded successfully."
+            ));
         }
 
         // GET /api/files
@@ -39,7 +44,11 @@ namespace OurCompanion.API.Controllers
         {
             var result = await _fileService
                 .GetFilesAsync(User.GetAccountId());
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "Files retrieved successfully."
+            ));
         }
     }
 }

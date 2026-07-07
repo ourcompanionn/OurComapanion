@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OurCompanion.Application.Common.Models;
+using OurCompanion.Application.DTOs.Category;
 using OurCompanion.Application.Interfaces.Services;
 
 namespace OurCompanion.API.Controllers
@@ -20,7 +23,31 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> GetCategories()
         {
             var result = await _categoryService.GetCategoriesAsync();
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,"Categories fetched successfully"));
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> CreateCategory(
+       [FromBody] CreateCategoryDto dto)
+        {
+            var result = await _categoryService
+                .CreateCategoryAsync(dto);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,"Category created successfully"));
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            await _categoryService.DeleteCategoryAsync(id);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null, "Category deleted successfully"));
         }
     }
 }

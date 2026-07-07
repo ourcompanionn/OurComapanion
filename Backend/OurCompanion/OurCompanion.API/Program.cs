@@ -40,6 +40,41 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                // suppress default 401 response
+                context.HandleResponse();
+
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    StatusCode = 401,
+                    Message = "You are not authorized. Please login first."
+                };
+
+                await context.Response.WriteAsJsonAsync(response);
+            },
+
+            OnForbidden = async context =>
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    StatusCode = 403,
+                    Message = "You do not have permission to access this resource."
+                };
+
+                await context.Response.WriteAsJsonAsync(response);
+            }
+        };
+
     });
 
 var app = builder.Build();

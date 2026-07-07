@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OurCompanion.API.Extensions;
+using OurCompanion.Application.Common.Models;
 using OurCompanion.Application.DTOs.UserProfile;
 using OurCompanion.Application.Interfaces.Services;
 
@@ -24,7 +25,11 @@ namespace OurCompanion.API.Controllers
         {
             var result = await _profileService
                 .CreateProfileAsync(User.GetAccountId(), dto);
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "Profile created successfully."
+            ));
         }
 
         // GET /api/profile
@@ -33,7 +38,11 @@ namespace OurCompanion.API.Controllers
         {
             var result = await _profileService
                 .GetProfileAsync(User.GetAccountId());
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "Profile retrieved successfully."
+            ));
         }
 
         // PATCH /api/profile
@@ -43,7 +52,11 @@ namespace OurCompanion.API.Controllers
         {
             await _profileService
                 .UpdateProfileAsync(User.GetAccountId(), dto);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Profile updated successfully."
+            ));
         }
 
         // PATCH /api/profile/categories
@@ -53,7 +66,11 @@ namespace OurCompanion.API.Controllers
         {
             await _profileService
             .UpdateCategoriesAsync(User.GetAccountId(), categoryIds);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Categories updated successfully."
+            ));
         }
 
         // PATCH /api/profile/online
@@ -62,7 +79,11 @@ namespace OurCompanion.API.Controllers
         {
             await _profileService
             .ToggleOnlineStatusAsync(User.GetAccountId());
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Online status updated successfully."
+            ));
         }
 
         // PATCH /api/profile/location
@@ -72,7 +93,11 @@ namespace OurCompanion.API.Controllers
         {
             await _profileService
             .UpdateLocationAsync(User.GetAccountId(), dto);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Location updated successfully."
+            ));
         }
     }
 }

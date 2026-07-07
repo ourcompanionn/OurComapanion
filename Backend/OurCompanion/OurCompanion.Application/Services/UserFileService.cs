@@ -84,6 +84,36 @@ namespace OurCompanion.Application.Services
             }
 
             await _unitOfWork.SaveAsync();
+
+            // Check if all required files have been uploaded
+            var uploadedFiles = await _unitOfWork.UserFiles
+                .FindAsync(f => f.UserProfileId == profile.Id && f.IsActive);
+
+            var uploadedTypes = uploadedFiles
+                .Select(f => (UserFileType)f.FileType)
+                .ToHashSet();
+
+            var hasAllRequiredFiles =
+                uploadedTypes.Contains(UserFileType.KycDocument) &&
+                uploadedTypes.Contains(UserFileType.PhotoFront) &&
+                uploadedTypes.Contains(UserFileType.PhotoLeft) &&
+                uploadedTypes.Contains(UserFileType.PhotoRight) &&
+                uploadedTypes.Contains(UserFileType.BgCheckDocument);
+
+            if (hasAllRequiredFiles)
+            {
+                var account = await _unitOfWork.Accounts
+                    .GetByIdAsync(accountId);
+
+                if (account != null)
+                {
+                    account.IsProfileCompleted = true;
+                    _unitOfWork.Accounts.Update(account);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+            
         }
 
         public async Task<List<UserFileDto>> GetFilesAsync(int accountId)

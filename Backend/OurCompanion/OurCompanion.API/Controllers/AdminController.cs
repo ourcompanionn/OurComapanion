@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OurCompanion.Application.Common.Models;
 using OurCompanion.Application.Interfaces.Services;
 using OurCompanion.Domain.Enums;
 
@@ -31,7 +32,8 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> GetCompanionFiles(int userProfileId)
         {
             var result = await _adminService.GetCompanionFilesAsync(userProfileId);
-            return Ok(result);
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result, "Companion files retrieved successfully."));
         }
 
         // PATCH /api/admin/companions/{userProfileId}/kyc
@@ -41,7 +43,10 @@ namespace OurCompanion.API.Controllers
             [FromBody] KycStatus status)
         {
             await _adminService.UpdateKycStatusAsync(userProfileId, status);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "KYC status updated successfully."
+            ));
         }
 
         // PATCH /api/admin/companions/{userProfileId}/bgcheck
@@ -51,7 +56,11 @@ namespace OurCompanion.API.Controllers
             [FromBody] BgCheckStatus status)
         {
             await _adminService.UpdateBgCheckStatusAsync(userProfileId, status);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Background check status updated successfully."
+            ));
         }
     }
 }

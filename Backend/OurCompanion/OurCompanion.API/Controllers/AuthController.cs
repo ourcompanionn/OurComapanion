@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using OurCompanion.Application.Common.Models;
 using OurCompanion.Application.DTOs.Auth;
 using OurCompanion.Application.Interfaces.Services;
 
@@ -22,7 +23,11 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> RequestOtp([FromBody] RequestOtpDto request)
         {
             await _authService.RequestOtpAsync(request);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "OTP sent successfully."
+            ));
         }
 
         [HttpPost("verify-otp")]
@@ -30,7 +35,11 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto request)
         {
             var result = await _authService.VerifyOtpAsync(request);
-            return Ok(result); // Automatically returns the JWTs, or "IsRegistrationRequired = true"
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "OTP verified successfully."
+            )); // Automatically returns the JWTs, or "IsRegistrationRequired = true"
         }
 
         [HttpPost("register")]
@@ -38,7 +47,11 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserDto request)
         {
             var result = await _authService.RegisterUserAsync(request);
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "User registered successfully."
+            ));
         }
 
         [HttpPost("refresh-token")]
@@ -46,7 +59,11 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
         {
             var result = await _authService.RefreshTokenAsync(request.RefreshToken);
-            return Ok(result);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                result,
+                "Token refreshed successfully."
+            ));
         }
 
         [HttpPost("logout")]
@@ -54,7 +71,11 @@ namespace OurCompanion.API.Controllers
         public async Task<IActionResult> Logout([FromBody] RefreshTokenRequestDto request)
         {
             await _authService.LogoutAsync(request.RefreshToken);
-            return NoContent();
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                null,
+                "Logged out successfully."
+            ));
         }
     }
 }

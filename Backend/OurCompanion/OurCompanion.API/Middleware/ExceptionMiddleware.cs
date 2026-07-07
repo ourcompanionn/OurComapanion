@@ -1,7 +1,8 @@
-﻿using System.Net;
-using System.Text.Json;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using OurCompanion.Application.Common.Exceptions;
+using OurCompanion.Application.Common.Models;
+using System.Net;
+using System.Text.Json;
 
 namespace OurCompanion.API.Middleware
 {
@@ -44,15 +45,13 @@ namespace OurCompanion.API.Middleware
 
             // Build  JSON response for the frontend
 
-            var response = new
-            {
-                StatusCode = statusCode,
-                Message = exception.Message,
-
-                // Only show the messy stack trace if it's a critical 500 crash
-
-                Details = statusCode == 500 ? exception.StackTrace?.ToString() : null
-            };
+            var response = ApiResponse<object>.FailureResponse(
+                message: exception.Message,
+                errors: statusCode == (int)HttpStatusCode.InternalServerError
+                ? new List<string> { exception.StackTrace ?? "An unexpected error occurred." }
+                : null
+                );
+            
             var jsonResponse = JsonSerializer.Serialize(response);
             return context.Response.WriteAsync(jsonResponse);
         }
