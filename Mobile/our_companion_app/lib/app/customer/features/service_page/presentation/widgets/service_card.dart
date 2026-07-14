@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/app/shared/request/presentation/pages/customer_request_bottom_sheet.dart';
-import 'package:our_companion_app/app/shared/request/provider/request_form_provider.dart';
 import 'package:our_companion_app/core/routes/app_routes.dart';
+import 'package:our_companion_app/app/shared/request/provider/request_form_provider.dart';
 
 class ServiceCard extends ConsumerWidget {
   final String title;
@@ -27,13 +26,9 @@ class ServiceCard extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () {
-        // ref.read(requestFormProvider.notifier).setSelectedService(title, icon: icon);
-        // showModalBottomSheet(
-        //   context: context,
-        //   isScrollControlled: true,
-        //   backgroundColor: Colors.transparent,
-        //  builder: (context) => const CustomerRequestBottomSheet(),
-        // );
+        ref
+            .read(requestFormProvider.notifier)
+            .setSelectedService(title, icon: icon);
         context.push(AppRoutes.customerRequest);
       },
       child: Stack(
@@ -87,13 +82,7 @@ class ServiceCard extends ConsumerWidget {
                       ref
                           .read(requestFormProvider.notifier)
                           .setSelectedService(title, icon: icon);
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) =>
-                            const CustomerRequestBottomSheet(),
-                      );
+                      context.push(AppRoutes.customerRequest);
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,

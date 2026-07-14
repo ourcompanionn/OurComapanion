@@ -7,6 +7,7 @@ import 'package:our_companion_app/app/shared/request/provider/request_form_provi
 import 'package:our_companion_app/app/shared/request/presentation/widgets/summery.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/request_flow_controller.dart';
 import 'package:our_companion_app/app/shared/request/presentation/widgets/sheet_content.dart';
+import 'package:our_companion_app/app/shared/widgets/custom_draggable_sheet.dart';
 
 class CustomerRequestDetailsPage extends ConsumerWidget {
   const CustomerRequestDetailsPage({super.key});
@@ -25,7 +26,7 @@ class CustomerRequestDetailsPage extends ConsumerWidget {
         children: [
           Positioned.fill(
             child: Container(
-              color: const Color.fromARGB(255, 45, 44, 44),
+              color: appColors.bgLocation,
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -68,33 +69,19 @@ class CustomerRequestDetailsPage extends ConsumerWidget {
           ),
 
           // Draggable Bottom Sheet Content
-          DraggableScrollableSheet(
+          CustomDraggableSheet(
             initialChildSize: flowState == RequestFlowState.initial ? 0.6 : 0.4,
-            minChildSize: 0.2,
+            minChildSize: 0.35,
             maxChildSize: 0.85,
+            backgroundColor: appColors.seconderyBackground,
             builder: (context, scrollController) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: appColors.seconderyBackground,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, -5),
-                    ),
-                  ],
-                ),
-                child: SheetContent(
-                  flowState: flowState,
-                  flowNotifier: flowNotifier,
-                  appColors: appColors,
-                  requestState: requestState,
-                  requestNotifier: requestNotifier,
-                  scrollController: scrollController,
-                ),
+              return SheetContent(
+                flowState: flowState,
+                flowNotifier: flowNotifier,
+                appColors: appColors,
+                requestState: requestState,
+                requestNotifier: requestNotifier,
+                scrollController: scrollController,
               );
             },
           ),

@@ -22,14 +22,14 @@ class AppButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
     return SizedBox(
-      width: width,  
+      width: width,
       height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: bgcolor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(23),
           ),
         ),
         child: Text(
@@ -40,4 +40,3 @@ class AppButton extends ConsumerWidget {
     );
   }
 }
- 

@@ -4,12 +4,13 @@ import 'package:our_companion_app/core/routes/app_routes.dart';
 import 'package:our_companion_app/app/shared/splash/presentation/pages/splash_screen.dart';
 import 'package:our_companion_app/app/shared/onboarding/presentation/pages/role_select_page.dart';
 import 'package:our_companion_app/app/shared/auth/presentation/pages/signup_page.dart';
-import 'package:our_companion_app/app/shared/auth/presentation/pages/login_page.dart';
 import 'package:our_companion_app/app/shared/onboarding/presentation/pages/profile_setup_page.dart';
 import 'package:our_companion_app/app/shared/onboarding/presentation/pages/worker_category_page.dart';
 import 'package:our_companion_app/app/customer/home_page/presentation/customer_main_page.dart';
 import 'package:our_companion_app/app/worker/home_page/presentation/pages/worker_main_page.dart';
 import 'package:our_companion_app/app/shared/request/presentation/pages/customer_request_details_page.dart';
+import 'package:our_companion_app/app/shared/request/presentation/pages/customer_service_select_page.dart';
+import 'package:our_companion_app/app/shared/request/presentation/pages/customer_request_bottom_sheet.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -50,6 +51,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.customerRequestDetails,
         builder: (context, state) => const CustomerRequestDetailsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.customerServiceSelect,
+        builder: (context, state) => const CustomerServiceSelectPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.customerRequest,
+        builder: (context, state) => const CustomerRequestBottomSheet(),
       ),
     ],
   );

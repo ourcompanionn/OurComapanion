@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
+import 'package:our_companion_app/core/routes/app_routes.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
 
 class SetLocationField extends ConsumerWidget {
@@ -109,6 +111,11 @@ class SetLocationField extends ConsumerWidget {
                 TextField(
                   controller: locationController.destinationController,
                   onChanged: locationController.setDestination,
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      context.push(AppRoutes.customerServiceSelect);
+                    }
+                  },
                   decoration: InputDecoration(
                     hintText: 'Where to?',
                     hintStyle: GoogleFonts.poppins(

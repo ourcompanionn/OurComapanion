@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/app/shared/widgets/app_text_field.dart';
 import 'package:our_companion_app/app/shared/widgets/animated_gradient_border.dart';
-import 'package:our_companion_app/app/shared/request/presentation/pages/customer_request_bottom_sheet.dart';
+import 'package:our_companion_app/core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomerSearchLocation extends ConsumerWidget {
   const CustomerSearchLocation({super.key});
@@ -28,12 +29,7 @@ class CustomerSearchLocation extends ConsumerWidget {
         readOnly: true,
         showBorder: false,
         onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => const CustomerRequestBottomSheet(),
-          );
+          context.push(AppRoutes.customerRequest);
         },
       ),
     );

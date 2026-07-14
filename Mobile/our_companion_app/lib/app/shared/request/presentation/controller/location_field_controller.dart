@@ -9,7 +9,14 @@ class LocationFieldController extends ChangeNotifier {
   final TextEditingController destinationController = TextEditingController();
   final List<TextEditingController> stopControllers = [];
 
-  LocationFieldController(this.ref);
+  LocationFieldController(this.ref) {
+    final formState = ref.read(requestFormProvider);
+    pickupController.text = formState.pickupLocation;
+    destinationController.text = formState.destination;
+    for (var stop in formState.stops) {
+      stopControllers.add(TextEditingController(text: stop));
+    }
+  }
 
   void setPickup(String value) {
     ref.read(requestFormProvider.notifier).setPickupLocation(value);

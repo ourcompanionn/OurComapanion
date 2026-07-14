@@ -90,7 +90,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                           readOnly: signupState.otpSent,
                           prefixIcon: Icons.phone_outlined,
                           validator: (value) {
-                            if (signupState.signupMethod == SignupMethod.phone) {
+                            if (signupState.signupMethod ==
+                                SignupMethod.phone) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your phone number';
                               }
@@ -143,7 +144,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                           readOnly: signupState.otpSent,
                           prefixIcon: Icons.email_outlined,
                           validator: (value) {
-                            if (signupState.signupMethod == SignupMethod.email) {
+                            if (signupState.signupMethod ==
+                                SignupMethod.email) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
                               }
@@ -204,37 +206,38 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     bgcolor: appColors.primary,
                     height: 56,
                     width: double.infinity,
-                    onPressed: signupState.otpSent
-                        ? () async {
-                            await authController.verifyOtp(
-                              phoneNumber: _phoneController.text,
-                              otp: _otpController.text,
-                              deviceIdentifier: "device-id",
-                              platform: "Android",
-                              deviceName: "Android Device",
-                            );
-                            final auth = ref.read(authControllerProvider).auth;
+                    // onPressed: signupState.otpSent
+                    //     ? () async {
+                    //         await authController.verifyOtp(
+                    //           phoneNumber: _phoneController.text,
+                    //           otp: _otpController.text,
+                    //           deviceIdentifier: "device-id",
+                    //           platform: "Android",
+                    //           deviceName: "Android Device",
+                    //         );
+                    //         final auth = ref.read(authControllerProvider).auth;
 
-                            if (auth == null) return;
+                    //         if (auth == null) return;
 
-                            if (auth.isRegistrationRequired) {
-                              if (mounted) {
-                                context.go(AppRoutes.profileSetup);
-                              }
-                            } else {
-                              if (mounted) {
-                               context.go(AppRoutes.signup);
-                              }
-                            }
-                          }
-                        : () async {
-                            if (_formKey.currentState!.validate()) {
-                              await authController.requestOtp(
-                                _phoneController.text,
-                              );
-                              signupController.setOtpSent(true);
-                            }
-                          },
+                    //         if (auth.isRegistrationRequired) {
+                    //           if (mounted) {
+                    //             context.go(AppRoutes.profileSetup);
+                    //           }
+                    //         } else {
+                    //           if (mounted) {
+                    //            context.go(AppRoutes.signup);
+                    //           }
+                    //         }
+                    //       }
+                    //     : () async {
+                    //         if (_formKey.currentState!.validate()) {
+                    //           await authController.requestOtp(
+                    //             _phoneController.text,
+                    //           );
+                    //           signupController.setOtpSent(true);
+                    //         }
+                    //       },
+                    onPressed: () => context.go(AppRoutes.customerMain),
                   ),
 
                   const SizedBox(height: 20),
