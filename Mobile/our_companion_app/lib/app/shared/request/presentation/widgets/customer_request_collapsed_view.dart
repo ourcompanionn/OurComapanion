@@ -35,7 +35,7 @@ class CustomerRequestCollapsedView extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Destination Field
             Container(
               decoration: BoxDecoration(
@@ -63,7 +63,9 @@ class CustomerRequestCollapsedView extends ConsumerWidget {
                           color: appColors.secondaryText,
                         ),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
                       ),
                       style: GoogleFonts.poppins(color: appColors.text),
                     ),
@@ -71,9 +73,9 @@ class CustomerRequestCollapsedView extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Continue Button
             AppButton(
               bgcolor: appColors.primary,

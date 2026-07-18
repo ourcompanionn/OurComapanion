@@ -94,3 +94,8 @@ final requestFormProvider =
     StateNotifierProvider<RequestFormNotifier, RequestFormState>((ref) {
       return RequestFormNotifier();
     });
+
+final recentLocationProvider = StateProvider<Map<String, String>?>((ref) {
+  // Initial mock value so something shows up; update this when user searches
+  return {'destination': 'Lulu Mall, Edappally', 'pickup': 'Kochi, Palarivattom'};
+});

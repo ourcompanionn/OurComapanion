@@ -40,7 +40,7 @@ const lightColors = AppColors(
   text: Color(0xFF0F172A),
   secondaryText: Color(0xFF64748B),
   border: Color(0xFFE2E8F0),
-  animatedBorder: Color(0xFF14B8A6),
+  animatedBorder:  Color(0xFF14B8A6),
   bgLocation: Color.fromARGB(255, 235, 235, 235),
 );
 

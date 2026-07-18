@@ -62,3 +62,12 @@ final filteredServicesProvider = Provider<List<ServiceItem>>((ref) {
     return title.contains(searchQuery) || desc.contains(searchQuery);
   }).toList();
 });
+
+// Mock provider for the recently booked service
+final recentServiceProvider = Provider<ServiceItem?>((ref) {
+  final services = ref.watch(servicesListProvider);
+  if (services.isNotEmpty) {
+    return services.first;
+  }
+  return null;
+});
