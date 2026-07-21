@@ -21,10 +21,7 @@ class ServiceGrid extends ConsumerWidget {
           return Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: HomeServiceCard(
-                appColors: appColors,
-                service: service,
-              ),
+              child: HomeServiceCard(appColors: appColors, service: service),
             ),
           );
         }).toList(),

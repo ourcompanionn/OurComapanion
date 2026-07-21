@@ -9,11 +9,11 @@ class HomeIntraction extends ConsumerWidget {
   const HomeIntraction({super.key, required this.appColors});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
     return Container(
       width: double.infinity,
-      height: 250,
+      height: 230,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [appColors.primary, Color.fromARGB(255, 0, 85, 78)],
@@ -52,7 +52,7 @@ class HomeIntraction extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 15),
-            RecentLocationCard(appColors: appColors)
+            RecentLocationCard(appColors: appColors),
           ],
         ),
       ),

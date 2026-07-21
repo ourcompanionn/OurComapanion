@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/customer_search_location.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/home_intraction.dart';
-import 'package:our_companion_app/app/customer/home_page/widgets/recent_locationn_card.dart';
-import 'package:our_companion_app/app/customer/home_page/widgets/service_grid.dart';
+  import 'package:our_companion_app/app/customer/home_page/widgets/service_grid.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/core/providers/theme_provider.dart';
 
@@ -74,7 +73,7 @@ class _CustomerHomePageState extends ConsumerState<CustomerHomePage> {
           const SizedBox(height: 16),
           CustomerSearchLocation(),
           const SizedBox(height: 12),
-          HomeIntraction(appColors: appColors),
+          HomeIntraction(appColors: appColors),  
           const SizedBox(height: 12),
           ServiceGrid(appColors: appColors),
           const SizedBox(height: 20),

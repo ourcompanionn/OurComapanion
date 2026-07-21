@@ -39,18 +39,25 @@ class RecentLocationCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-           
             InkWell(
               onTap: () {
-                ref.read(requestFormProvider.notifier).setPickupLocation(recentLocation['pickup'] ?? '');
-                ref.read(requestFormProvider.notifier).setDestination(recentLocation['destination'] ?? '');
+                ref
+                    .read(requestFormProvider.notifier)
+                    .setPickupLocation(recentLocation['pickup'] ?? '');
+                ref
+                    .read(requestFormProvider.notifier)
+                    .setDestination(recentLocation['destination'] ?? '');
                 context.push(AppRoutes.customerRequest);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.history, color: appColors.secondaryText, size: 20),
+                    Icon(
+                      Icons.history,
+                      color: appColors.secondaryText,
+                      size: 20,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -75,7 +82,11 @@ class RecentLocationCard extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios, color: appColors.secondaryText, size: 12),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: appColors.secondaryText,
+                      size: 12,
+                    ),
                   ],
                 ),
               ),
