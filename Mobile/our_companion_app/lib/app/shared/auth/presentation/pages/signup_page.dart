@@ -12,6 +12,8 @@ import 'package:our_companion_app/app/shared/auth/presentation/widgets/otp_secti
 import 'package:our_companion_app/app/shared/auth/presentation/widgets/signup_footer.dart';
 import 'package:our_companion_app/app/shared/widgets/app_button.dart';
 import 'package:our_companion_app/app/shared/widgets/app_text_field.dart';
+import 'package:our_companion_app/app/shared/auth/domin/entities/user_role.dart';
+import 'package:our_companion_app/app/shared/onboarding/presentation/providers/role_provider.dart';
 import 'package:our_companion_app/core/routes/app_routes.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -206,38 +208,43 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     bgcolor: appColors.primary,
                     height: 56,
                     width: double.infinity,
-                    // onPressed: signupState.otpSent
-                    //     ? () async {
-                    //         await authController.verifyOtp(
-                    //           phoneNumber: _phoneController.text,
-                    //           otp: _otpController.text,
-                    //           deviceIdentifier: "device-id",
-                    //           platform: "Android",
-                    //           deviceName: "Android Device",
-                    //         );
-                    //         final auth = ref.read(authControllerProvider).auth;
+                    onPressed: signupState.otpSent
+                        ? () async {
+                            if (!_formKey.currentState!.validate()) return;
+                            await authController.verifyOtp(
+                              phoneNumber: _phoneController.text,
+                              otp: _otpController.text,
+                              deviceIdentifier: "device-id",
+                              platform: "Mobile",
+                              deviceName: "Mobile Device",
+                            );
+                            final auth = ref.read(authControllerProvider).auth;
 
-                    //         if (auth == null) return;
+                            if (auth == null) return;
 
-                    //         if (auth.isRegistrationRequired) {
-                    //           if (mounted) {
-                    //             context.go(AppRoutes.profileSetup);
-                    //           }
-                    //         } else {
-                    //           if (mounted) {
-                    //            context.go(AppRoutes.signup);
-                    //           }
-                    //         }
-                    //       }
-                    //     : () async {
-                    //         if (_formKey.currentState!.validate()) {
-                    //           await authController.requestOtp(
-                    //             _phoneController.text,
-                    //           );
-                    //           signupController.setOtpSent(true);
-                    //         }
-                    //       },
-                    onPressed: () => context.go(AppRoutes.customerMain),
+                            if (auth.isRegistrationRequired) {
+                              if (mounted) {
+                                context.go(AppRoutes.profileSetup);
+                              }
+                            } else {
+                              if (mounted) {
+                                final selectedRole = ref.read(roleProvider);
+                                if (selectedRole == UserRole.worker) {
+                                  context.go(AppRoutes.workerMain);
+                                } else {
+                                  context.go(AppRoutes.customerMain);
+                                }
+                              }
+                            }
+                          }
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              await authController.requestOtp(
+                                _phoneController.text,
+                              );
+                              signupController.setOtpSent(true);
+                            }
+                          },
                   ),
 
                   const SizedBox(height: 20),

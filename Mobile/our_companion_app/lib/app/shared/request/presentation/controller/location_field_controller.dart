@@ -43,6 +43,11 @@ class LocationFieldController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setPickupLocation(String address) {
+  pickupController.text = address;
+  setPickup(address);
+}
+
   @override
   void dispose() {
     pickupController.dispose();

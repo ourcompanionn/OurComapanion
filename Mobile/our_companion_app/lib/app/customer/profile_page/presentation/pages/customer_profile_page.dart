@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:our_companion_app/app/customer/profile_page/presentation/widgets/profile_options.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,7 @@ class CustomerProfilePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'My Profile',
+                'My Profile', 
                 style: GoogleFonts.poppins(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -61,27 +62,17 @@ class CustomerProfilePage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              _buildProfileOption(
-                Icons.person_outline,
-                'Edit Profile',
-                appColors,
-              ),
-              _buildProfileOption(
-                Icons.notifications_none_outlined,
-                'Notifications',
-                appColors,
-              ),
-              _buildProfileOption(
-                Icons.shield_outlined,
-                'Privacy & Safety',
-                appColors,
-              ),
-              _buildProfileOption(
-                Icons.help_outline_outlined,
-                'Support & FAQ',
-                appColors,
-              ),
-              const Divider(height: 32),
+             BuildProfileOption(icon: Icons.person, title: 'Edit Profile', colores: appColors,),
+             BuildProfileOption(icon: Icons.notifications_none_outlined, title: 'Notifications', colores: appColors,),
+             BuildProfileOption(icon: Icons.shield_outlined, title: 'Privacy & Safety', colores: appColors,),
+            
+             BuildProfileOption(icon: Icons.help_outline_outlined, title: 'Support & FAQ', colores: appColors,),
+            const Divider(height: 32),
+             BuildProfileOption(icon: Icons.logout, title: 'Sign Out', colores: appColors,),
+          
+           
+            
+              
               _buildProfileOption(
                 Icons.logout,
                 'Sign Out',

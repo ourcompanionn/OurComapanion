@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+        
+		<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs your location to provide nearby services.</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This app needs your location to provide nearby services.</string>
+
+
 </dict>
 </plist>

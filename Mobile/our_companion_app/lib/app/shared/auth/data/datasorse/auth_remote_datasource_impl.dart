@@ -96,17 +96,43 @@ Future<ApiResponse> verifyOtp(
 }
 
   @override
-  Future<ApiResponse> register(
-    RegisterRequest request,
-  ) async {
+  // Future<ApiResponse> register(
+  //   RegisterRequest request,
+  // ) async {
+
+  //   final response = await dio.post(
+  //     ApiEndpoints.register,
+  //     data: request.toJson(),
+  //   );
+
+  //   return ApiResponse.fromJson(response.data);
+  // }
+  @override
+Future<ApiResponse> register(
+  RegisterRequest request,
+) async {
+  try {
+    print("========== REGISTER ==========");
+    print("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.register}");
+    print("Request Body: ${request.toJson()}");
 
     final response = await dio.post(
       ApiEndpoints.register,
       data: request.toJson(),
     );
 
+    print("Status Code: ${response.statusCode}");
+    print("Response: ${response.data}");
+
     return ApiResponse.fromJson(response.data);
+  } on DioException catch (e) {
+    print("========== REGISTER ERROR ==========");
+    print("Status Code: ${e.response?.statusCode}");
+    print("Response: ${e.response?.data}");
+    print("Message: ${e.message}");
+    rethrow;
   }
+}
 
   @override
   Future<ApiResponse> refreshToken(

@@ -14,7 +14,11 @@ class WorkerHomePage extends ConsumerWidget {
       body: Center(
         child: Text(
           'Worker Home',
-          style: GoogleFonts.poppins(color: appColors.text, fontSize: 24, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            color: appColors.text,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

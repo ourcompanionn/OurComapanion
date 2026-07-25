@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:our_companion_app/app/shared/auth/presentation/controller/signup_ui_state.dart';
 import 'package:our_companion_app/app/shared/auth/presentation/provider/auth_provider.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/app/shared/onboarding/presentation/controller/profile_setup_controller.dart';
+import 'package:our_companion_app/app/shared/auth/presentation/controller/profile_setup_controller.dart';
 import 'package:our_companion_app/app/shared/onboarding/presentation/providers/profile_provider.dart';
 import 'package:our_companion_app/app/shared/onboarding/presentation/widgets/gender_card.dart';
 import 'package:our_companion_app/app/shared/widgets/app_button.dart';
@@ -21,13 +21,15 @@ class ProfileSetupPage extends ConsumerStatefulWidget {
 
 class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -90,7 +92,28 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                 ),
                 const SizedBox(height: 8),
                 AppTextField(
-                  controller: _nameController,
+                  controller: _firstNameController,
+                  hintText: 'Enter your full name',
+                  prefixIcon: Icons.person_outline,
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                Text(
+                  'Full Name',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                AppTextField(
+                  controller: _lastNameController,
                   hintText: 'Enter your full name',
                   prefixIcon: Icons.person_outline,
                   keyboardType: TextInputType.name,
@@ -208,7 +231,8 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                     height: 56,
                     width: double.infinity,
                     onPressed: () => controller.onContinue(
-                      name: _nameController.text,
+                      firstName: _firstNameController.text ,
+                      lastName: _lastNameController.text,
                       email: _emailController.text,
                       phone: _phoneController.text,
                     ),

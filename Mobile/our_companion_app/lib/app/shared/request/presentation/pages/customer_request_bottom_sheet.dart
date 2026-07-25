@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:our_companion_app/app/shared/location/presentation/controllers/location_controller.dart';
+import 'package:our_companion_app/app/shared/location/presentation/widget/current_location_map.dart';
+import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/app/shared/request/provider/request_form_provider.dart';
 import 'package:our_companion_app/app/shared/request/presentation/widgets/request_type_chip.dart';
@@ -21,6 +24,22 @@ class _CustomerRequestBottomSheetState
     extends ConsumerState<CustomerRequestBottomSheet> {
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
+
+
+      @override
+void initState() {
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final location = ref.read(locationControllerProvider);
+
+    location.whenData((data) {
+      ref
+          .read(locationFieldControllerProvider)
+          .setPickupLocation(data.address);
+    });
+  });
+}
 
   @override
   void dispose() {
@@ -120,6 +139,7 @@ class _CustomerRequestBottomSheetState
     final appColors = ref.watch(appColorsProvider);
     final requestState = ref.watch(requestFormProvider);
     final requestNotifier = ref.read(requestFormProvider.notifier);
+    final location = ref.watch(locationControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -127,31 +147,7 @@ class _CustomerRequestBottomSheetState
         children: [
           // Styled Map/Background
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: appColors.bgLocation,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                border: Border.symmetric(
-                  horizontal: BorderSide(width: 2, color: appColors.border),
-                ),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.map, size: 64, color: Colors.grey[500]),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Map Background (Dummy)',
-                      style: GoogleFonts.poppins(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            child: const CurrentLocationMap()
           ),
 
           // Back Button

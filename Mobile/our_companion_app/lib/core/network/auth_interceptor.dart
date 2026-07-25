@@ -14,11 +14,15 @@ class AuthInterceptor extends Interceptor {
   ) async {
 
     final token = await storage.getAccessToken();
+   
+   print("TOKEN: $token");
 
     if (token != null && token.isNotEmpty) {
       options.headers["Authorization"] =
           "Bearer $token";
     }
+
+    print("HEADERS: ${options.headers}");
 
     handler.next(options);
   }

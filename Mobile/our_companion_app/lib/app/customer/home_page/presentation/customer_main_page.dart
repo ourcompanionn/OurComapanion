@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/app/customer/activity_page/presentation/customer_activity_page.dart';
 import 'package:our_companion_app/app/customer/home_page/presentation/customer_home_page.dart';
-import 'package:our_companion_app/app/customer/profile_page/presentation/customer_profile_page.dart';
+import 'package:our_companion_app/app/customer/profile_page/presentation/pages/customer_profile_page.dart';
 import 'package:our_companion_app/app/customer/service_page/presentation/pages/customer_service_page.dart';
 import 'package:our_companion_app/app/shared/widgets/custom_nav_bar.dart';
 

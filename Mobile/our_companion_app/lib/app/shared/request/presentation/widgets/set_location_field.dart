@@ -9,11 +9,15 @@ import 'package:our_companion_app/app/shared/request/presentation/controller/loc
 class SetLocationField extends ConsumerWidget {
   const SetLocationField({super.key});
 
+  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
     final locationController = ref.watch(locationFieldControllerProvider);
     final isAddStopDisabled = locationController.stopControllers.length >= 3;
+
+
 
     return Container(
       decoration: BoxDecoration(

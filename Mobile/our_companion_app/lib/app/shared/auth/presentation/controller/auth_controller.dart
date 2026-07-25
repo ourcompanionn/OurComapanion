@@ -37,28 +37,25 @@ class AuthController extends StateNotifier<AuthState> {
   // }
 
   Future<void> requestOtp(String phoneNumber) async {
-  print("Request OTP button clicked");
-  print("Phone: $phoneNumber");
+    print("Request OTP button clicked");
+    print("Phone: $phoneNumber");
 
-  try {
-    state = state.copyWith(isLoading: true);
+    try {
+      state = state.copyWith(isLoading: true);
 
-    await requestOtpUseCase(phoneNumber);
+      await requestOtpUseCase(phoneNumber);
 
-    print("OTP Request Success");
+      print("OTP Request Success");
 
-    state = state.copyWith(isLoading: false);
-  } catch (e, stackTrace) {
-    print("REQUEST OTP ERROR:");
-    print(e);
-    print(stackTrace);
+      state = state.copyWith(isLoading: false);
+    } catch (e, stackTrace) {
+      print("REQUEST OTP ERROR:");
+      print(e);
+      print(stackTrace);
 
-    state = state.copyWith(
-      isLoading: false,
-      error: e.toString(),
-    );
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
   }
-}
 
   // Future<void> verifyOtp({
   //   required String phoneNumber,
@@ -88,48 +85,55 @@ class AuthController extends StateNotifier<AuthState> {
   // }
 
   Future<void> verifyOtp({
-  required String phoneNumber,
-  required String otp,
-  required String deviceIdentifier,
-  required String platform,
-  required String deviceName,
-}) async {
-  print("========== VERIFY OTP ==========");
-  print("Phone: $phoneNumber");
-  print("OTP: $otp");
+    required String phoneNumber,
+    required String otp,
+    required String deviceIdentifier,
+    required String platform,
+    required String deviceName,
+  }) async {
+    print("========== VERIFY OTP ==========");
+    print("Phone: $phoneNumber");
+    print("OTP: $otp");
 
-  try {
-    state = state.copyWith(isLoading: true);
+    try {
+      state = state.copyWith(isLoading: true);
 
-    final auth = await verifyOtpUseCase(
-      phoneNumber: phoneNumber,
-      otpCode: otp,
-      deviceIdentifier: deviceIdentifier,
-      platform: platform,
-      deviceName: deviceName,
-    );
+      final auth = await verifyOtpUseCase(
+        phoneNumber: phoneNumber,
+        otpCode: otp,
+        deviceIdentifier: deviceIdentifier,
+        platform: platform,
+        deviceName: deviceName,
+      );
 
-    print("VERIFY SUCCESS");
-    print(auth);
+      print("VERIFY SUCCESS");
+      print(auth);
+      print(auth.account?.accountType);
+      print("Access Token from API: ${auth.accessToken}");
+      print("Refresh Token from API: ${auth.refreshToken}");
+      print("Is Registration Required: ${auth.isRegistrationRequired}");
 
-    await storage.saveAccessToken(auth.accessToken);
-    await storage.saveRefreshToken(auth.refreshToken);
+      await storage.savePhoneNumber(phoneNumber);
 
-    state = state.copyWith(
-      isLoading: false,
-      auth: auth,
-    );
-  } catch (e, s) {
-    print("VERIFY ERROR");
-    print(e);
-    print(s);
+      if (!auth.isRegistrationRequired) {
+        await storage.saveAccessToken(auth.accessToken);
+        await storage.saveRefreshToken(auth.refreshToken);
 
-    state = state.copyWith(
-      isLoading: false,
-      error: e.toString(),
-    );
+        if (auth.account != null) {
+          await storage.seveRole(auth.account!.accountType);
+        }
+
+        
+      }
+      state = state.copyWith(isLoading: false, auth: auth);
+    } catch (e, s) {
+      print("VERIFY ERROR");
+      print(e);
+      print(s);
+
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
   }
-}
 
   Future<void> register({
     required String firstName,
@@ -157,6 +161,9 @@ class AuthController extends StateNotifier<AuthState> {
       await storage.saveAccessToken(auth.accessToken);
 
       await storage.saveRefreshToken(auth.refreshToken);
+      if (auth.account != null) {
+        await storage.seveRole(auth.account!.accountType);
+      }
 
       state = state.copyWith(isLoading: false, auth: auth);
     } catch (e) {
@@ -177,4 +184,7 @@ class AuthController extends StateNotifier<AuthState> {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
+
+  
+
 }

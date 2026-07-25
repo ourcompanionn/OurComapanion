@@ -21,10 +21,12 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
       theme: ThemeData(
+        useMaterial3: true,
         scaffoldBackgroundColor: lightColors.background,
         colorScheme: ColorScheme.fromSeed(seedColor: lightColors.primary),
       ),
       darkTheme: ThemeData(
+        useMaterial3: true,
         scaffoldBackgroundColor: darkColors.background,
         colorScheme: ColorScheme.fromSeed(
           seedColor: darkColors.primary,
