@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_controller.dart';
+import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_state.dart';
+import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
+import 'package:our_companion_app/app/shared/location/presentation/providers/location_provider.dart';
 import 'package:our_companion_app/app/shared/location/presentation/widget/current_location_map.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
@@ -25,21 +29,20 @@ class _CustomerRequestBottomSheetState
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
+  @override
+  void initState() {
+    super.initState();
 
-      @override
-void initState() {
-  super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final location = ref.read(locationControllerProvider);
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final location = ref.read(locationControllerProvider);
-
-    location.whenData((data) {
-      ref
-          .read(locationFieldControllerProvider)
-          .setPickupLocation(data.address);
+      location.whenData((data) {
+        ref
+            .read(locationFieldControllerProvider)
+            .setPickupLocation(data.address);
+      });
     });
-  });
-}
+  }
 
   @override
   void dispose() {
@@ -51,14 +54,13 @@ void initState() {
     AppColors appColors,
     RequestFormState requestState,
     RequestFormNotifier requestNotifier,
+    LocationSearchState searchState,
+    LocationFieldController locationFieldController,
   ) {
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,6 +130,71 @@ void initState() {
             ),
             Divider(color: appColors.border),
             const SizedBox(height: 16),
+
+            if (searchState.isSearching)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+
+            if (searchState.places.isNotEmpty)
+              Container(
+                constraints: const BoxConstraints(maxHeight: 250),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: searchState.places.length,
+                  itemBuilder: (context, index) {
+                    final place = searchState.places[index];
+
+                    return ListTile(
+                      leading: const Icon(Icons.location_on),
+
+                      title: Text(place.name),
+
+                      subtitle: Text(
+                        place.address,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      onTap: () {
+                        // Update the text field
+                        final activeField = ref.read(activeSearchFieldProvider);
+
+                        print("Active field = ${ref.read(activeSearchFieldProvider)}");
+
+                        if (activeField == SearchField.pickup) {
+                          locationFieldController.pickupController.text =
+                              place.address;
+                          locationFieldController.setPickup(place.address);
+
+                          ref
+                              .read(mapLocationProvider.notifier)
+                              .setPickup(
+                                LatLng(place.latitude, place.longitude),
+                              );
+                        } else {
+                          locationFieldController.destinationController.text =
+                              place.address;
+                          locationFieldController.setDestination(place.address);
+
+                          ref
+                              .read(mapLocationProvider.notifier)
+                              .setDestination(
+                                LatLng(place.latitude, place.longitude),
+                              );
+                        }
+
+                        ref
+                            .read(locationSearchControllerProvider.notifier)
+                            .clearSearch();
+                      },
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),
@@ -139,16 +206,15 @@ void initState() {
     final appColors = ref.watch(appColorsProvider);
     final requestState = ref.watch(requestFormProvider);
     final requestNotifier = ref.read(requestFormProvider.notifier);
-    final location = ref.watch(locationControllerProvider);
+    final searchState = ref.watch(locationSearchControllerProvider);
+    final locationFieldController = ref.watch(locationFieldControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // Styled Map/Background
-          Positioned.fill(
-            child: const CurrentLocationMap()
-          ),
+          Positioned.fill(child: const CurrentLocationMap()),
 
           // Back Button
           Positioned(
@@ -199,6 +265,8 @@ void initState() {
                           appColors,
                           requestState,
                           requestNotifier,
+                          searchState,
+                          locationFieldController,
                         ),
                       );
                     },

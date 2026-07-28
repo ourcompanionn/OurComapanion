@@ -119,9 +119,18 @@ class AuthController extends StateNotifier<AuthState> {
         await storage.saveAccessToken(auth.accessToken);
         await storage.saveRefreshToken(auth.refreshToken);
 
+        // if (auth.account != null) {
+        //   await storage.seveRole(auth.account!.accountType);
+        // }
         if (auth.account != null) {
-          await storage.seveRole(auth.account!.accountType);
-        }
+  print("========== ROLE DEBUG ==========");
+  print("Role from API: ${auth.account!.accountType}");
+
+  await storage.seveRole(auth.account!.accountType);
+
+  final savedRole = await storage.getUserRole();
+  print("Role saved in storage: $savedRole");
+}
 
         
       }

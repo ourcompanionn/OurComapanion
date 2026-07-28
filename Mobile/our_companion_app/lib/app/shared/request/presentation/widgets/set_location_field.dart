@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
+import 'package:our_companion_app/app/shared/location/presentation/providers/location_provider.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/core/routes/app_routes.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
@@ -9,15 +11,11 @@ import 'package:our_companion_app/app/shared/request/presentation/controller/loc
 class SetLocationField extends ConsumerWidget {
   const SetLocationField({super.key});
 
-  
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
     final locationController = ref.watch(locationFieldControllerProvider);
     final isAddStopDisabled = locationController.stopControllers.length >= 3;
-
-
 
     return Container(
       decoration: BoxDecoration(
@@ -63,7 +61,19 @@ class SetLocationField extends ConsumerWidget {
               children: [
                 TextField(
                   controller: locationController.pickupController,
-                  onChanged: locationController.setPickup,
+
+                  onTap: () {
+                    ref.read(activeSearchFieldProvider.notifier).state =
+                        SearchField.pickup;
+                  },
+
+                  onChanged: (value) {
+                    locationController.setPickup(value);
+
+                    ref
+                        .read(locationSearchControllerProvider.notifier)
+                        .searchPlaces(value);
+                  },
                   decoration: InputDecoration(
                     hintText: 'Enter pickup location',
                     hintStyle: GoogleFonts.poppins(
@@ -114,11 +124,18 @@ class SetLocationField extends ConsumerWidget {
                 }),
                 TextField(
                   controller: locationController.destinationController,
-                  onChanged: locationController.setDestination,
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      context.push(AppRoutes.customerServiceSelect);
-                    }
+
+                  onTap: () {
+                    ref.read(activeSearchFieldProvider.notifier).state =
+                        SearchField.destination;
+                  },
+
+                  onChanged: (value) {
+                    locationController.setDestination(value);
+
+                    ref
+                        .read(locationSearchControllerProvider.notifier)
+                        .searchPlaces(value);
                   },
                   decoration: InputDecoration(
                     hintText: 'Where to?',
@@ -139,18 +156,18 @@ class SetLocationField extends ConsumerWidget {
               shape: BoxShape.circle,
               color: appColors.background,
               border: Border.all(
-                color: isAddStopDisabled 
-                    ? appColors.border.withValues(alpha: 0.3) 
-                    : appColors.border
+                color: isAddStopDisabled
+                    ? appColors.border.withValues(alpha: 0.3)
+                    : appColors.border,
               ),
             ),
             child: IconButton(
               icon: Icon(
-                Icons.add, 
-                color: isAddStopDisabled 
-                    ? appColors.secondaryText.withValues(alpha: 0.5) 
-                    : appColors.text, 
-                size: 20
+                Icons.add,
+                color: isAddStopDisabled
+                    ? appColors.secondaryText.withValues(alpha: 0.5)
+                    : appColors.text,
+                size: 20,
               ),
               onPressed: isAddStopDisabled ? null : locationController.addStop,
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),

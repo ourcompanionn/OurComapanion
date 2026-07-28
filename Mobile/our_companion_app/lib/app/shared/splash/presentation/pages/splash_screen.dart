@@ -28,6 +28,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final token = await storage.getAccessToken();
     final role = await storage.getUserRole();
 
+  debugPrint("TOKEN: $token");
+  debugPrint("ROLE: $role");
 
    if(!mounted) return;
 
@@ -51,4 +53,5 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Center(child: Text('data')),
     );
   }
+  
 }
