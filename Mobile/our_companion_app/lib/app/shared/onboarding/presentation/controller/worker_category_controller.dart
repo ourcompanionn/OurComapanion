@@ -9,6 +9,7 @@ import 'package:our_companion_app/app/shared/widgets/app_snackbar.dart';
 class WorkerCategoryController {
   final WidgetRef ref;
   final BuildContext context;
+  
 
   WorkerCategoryController({required this.ref, required this.context});
 

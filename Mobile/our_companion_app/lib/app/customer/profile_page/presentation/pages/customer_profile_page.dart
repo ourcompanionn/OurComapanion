@@ -2,9 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/app/customer/profile_page/presentation/widgets/profile_options.dart';
+import 'package:our_companion_app/app/shared/auth/presentation/provider/auth_provider.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:our_companion_app/core/providers/core_provider.dart';
 import 'package:our_companion_app/core/routes/app_routes.dart';
 
 class CustomerProfilePage extends ConsumerWidget {
@@ -79,9 +81,40 @@ class CustomerProfilePage extends ConsumerWidget {
                 appColors,
                 textColor: Colors.redAccent,
                 iconColor: Colors.redAccent,
-                onTap: () {
-                  context.go(AppRoutes.roleSelect);
-                },
+               onTap: () async {
+  final shouldLogout = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Logout"),
+      content: const Text("Are you sure you want to sign out?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text("Logout"),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldLogout != true) return;
+
+  final storage = ref.read(secureStorageProvider);
+  final refreshToken = await storage.getRefreshToken();
+
+  if (refreshToken != null) {
+    await ref
+        .read(authControllerProvider.notifier)
+        .logout(refreshToken);
+  }
+
+  if (context.mounted) {
+    context.go(AppRoutes.roleSelect);
+  }
+},
               ),
             ],
           ),

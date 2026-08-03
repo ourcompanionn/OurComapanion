@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
 import 'package:our_companion_app/app/shared/location/presentation/providers/location_provider.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
-import 'package:our_companion_app/core/routes/app_routes.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
 
 class SetLocationField extends ConsumerWidget {

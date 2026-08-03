@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/current_location.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/customer_search_location.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/home_intraction.dart';
+import 'package:our_companion_app/app/customer/home_page/widgets/recent_locationn_card.dart';
 import 'package:our_companion_app/app/customer/home_page/widgets/service_grid.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_controller.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
@@ -41,7 +42,7 @@ class _CustomerHomePageState extends ConsumerState<CustomerHomePage>
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider) == ThemeMode.dark;
     final appColors = ref.watch(appColorsProvider);
-    final location = ref.watch(locationControllerProvider);
+    // final location = ref.watch(locationControllerProvider);
 
     return Scaffold(
       backgroundColor: appColors.background,
@@ -74,15 +75,28 @@ class _CustomerHomePageState extends ConsumerState<CustomerHomePage>
                       color: isDarkMode ? Colors.yellow : Colors.grey[800],
                     ),
                     onPressed: () {
-                      ref.read(themeProvider.notifier).state = isDarkMode
-                          ? ThemeMode.light
-                          : ThemeMode.dark;
+                      final notifier = ref.read(themeProvider.notifier);
+                      final current = ref.read(themeProvider);
+
+                      switch (current) {
+                        case ThemeMode.system:
+                          notifier.state = ThemeMode.light;
+                          break;
+                        case ThemeMode.light:
+                          notifier.state = ThemeMode.dark;
+                          break;
+                        case ThemeMode.dark:
+                          notifier.state = ThemeMode.system;
+                          break;
+                      }
                     },
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               CustomerSearchLocation(),
+              const SizedBox(height: 12),
+              RecentLocationCard(appColors: appColors),
               const SizedBox(height: 12),
               HomeIntraction(appColors: appColors),
               const SizedBox(height: 12),

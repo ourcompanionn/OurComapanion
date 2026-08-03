@@ -1,20 +1,20 @@
 import 'auth_data_model.dart';
 
-class ApiResponse {
+class OtpVerifyResponse {
   final bool success;
   final String message;
   final AuthDataModel? data;
   final dynamic errors;
 
-  const ApiResponse({
+  const OtpVerifyResponse({
     required this.success,
     required this.message,
     this.data,
     this.errors,
   });
 
-  factory ApiResponse.fromJson(Map<String, dynamic> json) {
-    return ApiResponse(
+  factory OtpVerifyResponse.fromJson(Map<String, dynamic> json) {
+    return OtpVerifyResponse(
       success: json["success"] ?? false,
       message: json["message"] ?? "",
       data: json["data"] != null

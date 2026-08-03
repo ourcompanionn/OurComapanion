@@ -6,12 +6,13 @@ import 'package:our_companion_app/app/shared/location/data/datasources/route_rem
 import 'package:our_companion_app/app/shared/location/data/repositories/route_repository_impl.dart';
 import 'package:our_companion_app/app/shared/location/domain/repositories/route_repository.dart';
 import 'package:our_companion_app/app/shared/location/domain/usecases/get_route_usecase.dart';
-import 'package:our_companion_app/core/providers/core_provider.dart';
+import 'package:our_companion_app/core/providers/ors_dio_provider.dart';
+
 
 final routeDatasourceProvider =
     Provider<RouteRemoteDatasource>((ref) {
   return RouteRemoteDatasourceImpl(
-    ref.read(dioProvider),
+    ref.read(orsDioProvider),
   );
 });
 

@@ -30,6 +30,7 @@ class SecureStorageService {
     return _storage.read(key: _refreshToken);
   }
 
+
   Future<void> clear() async {
     await _storage.deleteAll();
   }

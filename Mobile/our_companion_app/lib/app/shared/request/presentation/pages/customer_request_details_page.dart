@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:our_companion_app/app/shared/location/presentation/widget/current_location_map.dart';
 import 'package:our_companion_app/core/constents/app_color.dart';
 import 'package:our_companion_app/app/shared/request/provider/request_form_provider.dart';
 import 'package:our_companion_app/app/shared/request/presentation/widgets/summery.dart';
@@ -24,25 +24,8 @@ class CustomerRequestDetailsPage extends ConsumerWidget {
       backgroundColor: appColors.background,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Container(
-              color: appColors.bgLocation,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.map, size: 64, color: Colors.grey[500]),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Map Background (Dummy)',
-                      style: GoogleFonts.poppins(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
+           Positioned.fill(child: const CurrentLocationMap()),
+            
           Positioned(
             top: MediaQuery.of(context).padding.top + 22,
             left: 16,

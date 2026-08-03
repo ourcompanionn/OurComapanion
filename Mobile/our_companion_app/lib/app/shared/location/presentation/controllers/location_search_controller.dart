@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
 
 import '../providers/location_provider.dart';
 import 'location_search_state.dart';

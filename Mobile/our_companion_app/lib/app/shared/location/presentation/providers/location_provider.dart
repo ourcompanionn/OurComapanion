@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:our_companion_app/app/shared/location/data/datasources/place_search_remote_datasource.dart';
@@ -10,8 +10,7 @@ import 'package:our_companion_app/app/shared/location/presentation/controllers/l
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/map_location_controller.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/map_location_state.dart';
-import 'package:our_companion_app/core/providers/core_provider.dart';
-
+import 'package:our_companion_app/core/providers/ors_dio_provider.dart';
 import '../../data/datasources/location_local_datasource.dart';
 import '../../data/repositories/location_repository_impl.dart';
 import '../../domain/repositories/location_repository.dart';
@@ -42,7 +41,7 @@ final getCurrentLocationUseCaseProvider =
 final placeSearchDatasourceProvider =
     Provider<PlaceSearchRemoteDatasource>((ref) {
   return PlaceSearchRemoteDatasourceImpl(
-    ref.read(dioProvider),
+    ref.read(orsDioProvider),
   );
 });
 
@@ -77,3 +76,7 @@ final activeSearchFieldProvider =
     StateProvider<SearchField>(
   (ref) => SearchField.destination,
 );
+
+final mapControllerProvider = Provider<MapController>((ref) {
+  return MapController();
+});

@@ -58,7 +58,7 @@ class AppTextField extends ConsumerWidget {
         ),
         counterText: '',
         prefixIcon: prefixIcon != null
-            ? Icon(prefixIcon, color: appColors.accent)
+            ? Icon(prefixIcon, color: appColors.text)
             : null,
         suffixIcon: suffixIcon,
         contentPadding: const EdgeInsets.symmetric(

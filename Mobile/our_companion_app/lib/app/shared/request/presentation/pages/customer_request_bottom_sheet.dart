@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_controller.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_state.dart';
 import 'package:our_companion_app/app/shared/location/presentation/controllers/location_search_type.dart';
+import 'package:our_companion_app/app/shared/location/presentation/controllers/route_controller.dart';
 import 'package:our_companion_app/app/shared/location/presentation/providers/location_provider.dart';
 import 'package:our_companion_app/app/shared/location/presentation/widget/current_location_map.dart';
 import 'package:our_companion_app/app/shared/request/presentation/controller/location_field_controller.dart';
@@ -160,31 +161,74 @@ class _CustomerRequestBottomSheetState
                       ),
 
                       onTap: () {
-                        // Update the text field
                         final activeField = ref.read(activeSearchFieldProvider);
 
-                        print("Active field = ${ref.read(activeSearchFieldProvider)}");
+                        print(
+                          "Active field = ${ref.read(activeSearchFieldProvider)}",
+                        );
 
                         if (activeField == SearchField.pickup) {
                           locationFieldController.pickupController.text =
                               place.address;
                           locationFieldController.setPickup(place.address);
 
+                          final pickup = LatLng(
+                            place.latitude,
+                            place.longitude,
+                          );
+
                           ref
                               .read(mapLocationProvider.notifier)
-                              .setPickup(
-                                LatLng(place.latitude, place.longitude),
-                              );
+                              .setPickup(pickup);
+
+                          final destination = ref
+                              .read(mapLocationProvider)
+                              .destination;
+                          print("Pickup = $pickup");
+                          print("Destination = $destination");
+
+
+                          if (destination != null) {
+                            print("Calling RouteController");
+
+                            ref
+                                .read(routeControllerProvider.notifier)
+                                .getRoute(
+                                  pickup: pickup,
+                                  destination: destination,
+                                );
+                          }
                         } else {
+                           print("Destination is NULL");
                           locationFieldController.destinationController.text =
                               place.address;
                           locationFieldController.setDestination(place.address);
 
+                          final destination = LatLng(
+                            place.latitude,
+                            place.longitude,
+                          );
+
                           ref
                               .read(mapLocationProvider.notifier)
-                              .setDestination(
-                                LatLng(place.latitude, place.longitude),
-                              );
+                              .setDestination(destination);
+
+                          final pickup = ref.read(mapLocationProvider).pickup;
+
+                          print("Pickup = $pickup");
+                          print("Destination = $destination");
+
+                          if (pickup != null) {
+                            print("Calling RouteController");
+                            ref
+                                .read(routeControllerProvider.notifier)
+                                .getRoute(
+                                  pickup: pickup,
+                                  destination: destination,
+                                );
+                          } else {
+                            print("Pickup is NULL");
+                          }
                         }
 
                         ref
@@ -213,10 +257,8 @@ class _CustomerRequestBottomSheetState
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Styled Map/Background
           Positioned.fill(child: const CurrentLocationMap()),
 
-          // Back Button
           Positioned(
             top: MediaQuery.of(context).padding.top + 22,
             left: 16,
@@ -231,7 +273,6 @@ class _CustomerRequestBottomSheetState
             ),
           ),
 
-          // Draggable Bottom Sheet
           CustomDraggableSheet(
             controller: _sheetController,
             initialChildSize: 0.9,

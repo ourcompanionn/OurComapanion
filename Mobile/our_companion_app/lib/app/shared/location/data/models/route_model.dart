@@ -1,3 +1,4 @@
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../domain/entities/route_entity.dart';
@@ -10,23 +11,28 @@ class RouteModel extends RouteEntity {
   });
 
   factory RouteModel.fromJson(Map<String, dynamic> json) {
-    final route = json['routes'][0];
+    final route = json["routes"][0];
 
-    final geometry = route['geometry'];
+    final summary = route["summary"];
 
-    final coordinates = geometry['coordinates'] as List;
+    final encodedPolyline = route["geometry"] as String;
 
-    final points = coordinates.map((e) {
-      return LatLng(
-        (e[1] as num).toDouble(),
-        (e[0] as num).toDouble(),
-      );
-    }).toList();
+    final decodedPoints =
+      PolylinePoints().decodePolyline(encodedPolyline);
+
+    final points = decodedPoints
+        .map(
+          (p) => LatLng(
+            p.latitude,
+            p.longitude,
+          ),
+        )
+        .toList();
 
     return RouteModel(
       points: points,
-      distance: (route['distance'] as num).toDouble(),
-      duration: (route['duration'] as num).toDouble(),
+      distance: (summary["distance"] as num).toDouble(),
+      duration: (summary["duration"] as num).toDouble(),
     );
   }
 }

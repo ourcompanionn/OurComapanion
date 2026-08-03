@@ -12,15 +12,16 @@ class HomeIntraction extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = ref.watch(appColorsProvider);
     return Container(
+      padding: EdgeInsets.all(16),
       width: double.infinity,
-      height: 230,
+      height: 220,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [appColors.primary, Color.fromARGB(255, 0, 85, 78)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(40)),
+        borderRadius: BorderRadius.all(Radius.circular(30)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -29,32 +30,28 @@ class HomeIntraction extends ConsumerWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              'Find Your\nBest Companion',
-              style: GoogleFonts.aBeeZee(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Find Your\nBest Companion',
+            style: GoogleFonts.aBeeZee(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Where would you like to go?',
-              style: GoogleFonts.poppins(
-                color: Colors.white.withValues(alpha: 0.8),
-                fontSize: 14,
-              ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Where would you like to go?',
+            style: GoogleFonts.poppins(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
             ),
-            SizedBox(height: 15),
-            RecentLocationCard(appColors: appColors),
-          ],
-        ),
+          ),
+          Spacer(),
+          RecentLocationCard(appColors: appColors),
+        ],
       ),
     );
   }

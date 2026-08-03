@@ -1,3 +1,6 @@
+
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:our_companion_app/app/shared/auth/data/model/request/logout_request.dart';
 import 'package:our_companion_app/app/shared/auth/data/model/request/refresh_token_request.dart';
@@ -15,25 +18,25 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   AuthRemoteDatasourceImpl(this.dio);
 
   @override
-  Future<ApiResponse> requestOtp(RequestOtpRequest request) async {
-    print("========== REQUEST OTP ==========");
-    print("URL: ${ApiEndpoints.requestOtp}");
-    print("Request Body: ${request.toJson()}");
+  Future<OtpVerifyResponse> requestOtp(RequestOtpRequest request) async {
+    log("========== REQUEST OTP ==========");
+    log("URL: ${ApiEndpoints.requestOtp}");
+    log("Request Body: ${request.toJson()}");
 
-    print(dio.options.baseUrl);
-print("${dio.options.baseUrl}${ApiEndpoints.requestOtp}");
+    log(dio.options.baseUrl);
+log("${dio.options.baseUrl}${ApiEndpoints.requestOtp}");
 
-    print("Before request");
+    log("Before request");
     final response = await dio.post(
       ApiEndpoints.requestOtp,
       data: request.toJson(),
     );
-    print("After request");
+    log("After request");
 
-    print("Status Code: ${response.statusCode}");
-    print("Response: ${response.data}");
+    log("Status Code: ${response.statusCode}");
+    log("Response: ${response.data}");
 
-    return ApiResponse.fromJson(response.data);
+    return OtpVerifyResponse.fromJson(response.data);
   }
 
   // @override
@@ -41,28 +44,28 @@ print("${dio.options.baseUrl}${ApiEndpoints.requestOtp}");
   //   RequestOtpRequest request,
   // ) async {
   //   try {
-  //     print("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.requestOtp}");
-  //     print("Request Body: ${request.toJson()}");
+  //     log("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.requestOtp}");
+  //     log("Request Body: ${request.toJson()}");
 
   //     final response = await dio.post(
   //       ApiEndpoints.requestOtp,
   //       data: request.toJson(),
   //     );
 
-  //     print("Status Code: ${response.statusCode}");
-  //     print("Response: ${response.data}");
+  //     log("Status Code: ${response.statusCode}");
+  //     log("Response: ${response.data}");
 
   //     return ApiResponse.fromJson(response.data);
   //   } on DioException catch (e) {
-  //     print("============== DIO ERROR ==============");
-  //     print("Message: ${e.message}");
-  //     print("Status: ${e.response?.statusCode}");
-  //     print("Response: ${e.response?.data}");
-  //     print("=======================================");
+  //     log("============== DIO ERROR ==============");
+  //     log("Message: ${e.message}");
+  //     log("Status: ${e.response?.statusCode}");
+  //     log("Response: ${e.response?.data}");
+  //     log("=======================================");
 
   //     rethrow;
   //   } catch (e) {
-  //     print("General Error: $e");
+  //     log("General Error: $e");
   //     rethrow;
   //   }
   // }
@@ -81,19 +84,19 @@ print("${dio.options.baseUrl}${ApiEndpoints.requestOtp}");
   // }
 
   @override
-  Future<ApiResponse> verifyOtp(VerifyOtpRequest request) async {
-    print("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.verifyOtp}");
-    print("Request Body: ${request.toJson()}");
+  Future<OtpVerifyResponse> verifyOtp(VerifyOtpRequest request) async {
+    log("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.verifyOtp}");
+    log("Request Body: ${request.toJson()}");
 
     final response = await dio.post(
       ApiEndpoints.verifyOtp,
       data: request.toJson(),
     );
 
-    print("Status Code: ${response.statusCode}");
-    print("Response: ${response.data}");
+    log("Status Code: ${response.statusCode}");
+    log("Response: ${response.data}");
 
-    return ApiResponse.fromJson(response.data);
+    return OtpVerifyResponse.fromJson(response.data);
   }
 
   @override
@@ -107,47 +110,47 @@ print("${dio.options.baseUrl}${ApiEndpoints.requestOtp}");
   //   return ApiResponse.fromJson(response.data);
   // }
   @override
-  Future<ApiResponse> register(RegisterRequest request) async {
+  Future<OtpVerifyResponse> register(RegisterRequest request) async {
     try {
-      print("========== REGISTER ==========");
-      print("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.register}");
-      print("Request Body: ${request.toJson()}");
+      log("========== REGISTER ==========");
+      log("Calling: ${ApiEndpoints.baseUrl}${ApiEndpoints.register}");
+      log("Request Body: ${request.toJson()}");
 
       final response = await dio.post(
         ApiEndpoints.register,
         data: request.toJson(),
       );
 
-      print("Status Code: ${response.statusCode}");
-      print("Response: ${response.data}");
+      log("Status Code: ${response.statusCode}");
+      log("Response: ${response.data}");
 
-      return ApiResponse.fromJson(response.data);
+      return OtpVerifyResponse.fromJson(response.data);
     } on DioException catch (e) {
-      print("========== REGISTER ERROR ==========");
-      print("Status Code: ${e.response?.statusCode}");
-      print("Response: ${e.response?.data}");
-      print("Message: ${e.message}");
+      log("========== REGISTER ERROR ==========");
+      log("Status Code: ${e.response?.statusCode}");
+      log("Response: ${e.response?.data}");
+      log("Message: ${e.message}");
       rethrow;
     }
   }
 
   @override
-  Future<ApiResponse> refreshToken(RefreshTokenRequest request) async {
+  Future<OtpVerifyResponse> refreshToken(RefreshTokenRequest request) async {
     final response = await dio.post(
       ApiEndpoints.refreshToken,
       data: request.toJson(),
     );
 
-    return ApiResponse.fromJson(response.data);
+    return OtpVerifyResponse.fromJson(response.data);
   }
 
   @override
-  Future<ApiResponse> logout(LogoutRequest request) async {
+  Future<OtpVerifyResponse> logout(LogoutRequest request) async {
     final response = await dio.post(
       ApiEndpoints.logout,
       data: request.toJson(),
     );
 
-    return ApiResponse.fromJson(response.data);
+    return OtpVerifyResponse.fromJson(response.data);
   }
 }

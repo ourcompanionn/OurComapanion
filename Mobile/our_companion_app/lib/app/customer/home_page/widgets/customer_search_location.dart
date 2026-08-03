@@ -16,12 +16,19 @@ class CustomerSearchLocation extends ConsumerWidget {
     return AnimatedGradientBorder(
       borderWidth: 2.0,
       borderRadius: BorderRadius.circular(25),
-      backgroundColor: appColors.background,
+      backgroundColor: appColors.surface,
       padding: EdgeInsets.zero,
       gradient: SweepGradient(
         colors: [appColors.border, appColors.animatedBorder, appColors.border],
         stops: const [0.0, 0.2, 0.5],
       ),
+      // boxShadow: [
+      //   BoxShadow(
+      //     color: Colors.black.withValues(alpha: 0.2),
+      //     blurRadius: 7,
+      //     offset: const Offset(0, 0),
+      //   ),
+      // ],
       child: AppTextField(
         controller: TextEditingController(),
         hintText: 'Search for services...',

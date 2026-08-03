@@ -8,23 +8,23 @@ import 'package:our_companion_app/app/shared/auth/data/model/responce/api_respon
 
 abstract class AuthRemoteDatasource {
 
-  Future<ApiResponse> requestOtp(
+  Future<OtpVerifyResponse> requestOtp(
     RequestOtpRequest request,
   );
 
-  Future<ApiResponse> verifyOtp(
+  Future<OtpVerifyResponse> verifyOtp(
     VerifyOtpRequest request,
   );
 
-  Future<ApiResponse> register(
+  Future<OtpVerifyResponse> register(
     RegisterRequest request,
   );
 
-  Future<ApiResponse> refreshToken(
+  Future<OtpVerifyResponse> refreshToken(
     RefreshTokenRequest request,
   );
 
-  Future<ApiResponse> logout(
+  Future<OtpVerifyResponse> logout(
     LogoutRequest request,
   );
 }
