@@ -14,17 +14,24 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
+        debugPrint("ThemeMode: $themeMode");
+
     final router = ref.watch(goRouterProvider);
+    debugPrint("ThemeMode: $themeMode");
+
+
 
     return MaterialApp.router(
       routerConfig: router,
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
       theme: ThemeData(
+        useMaterial3: true,
         scaffoldBackgroundColor: lightColors.background,
         colorScheme: ColorScheme.fromSeed(seedColor: lightColors.primary),
       ),
       darkTheme: ThemeData(
+        useMaterial3: true,
         scaffoldBackgroundColor: darkColors.background,
         colorScheme: ColorScheme.fromSeed(
           seedColor: darkColors.primary,

@@ -11,6 +11,9 @@ class AppColors {
   final Color text;
   final Color secondaryText;
   final Color border;
+  final Color animatedBorder;
+  final Color seconderyBackground;
+  final Color bgLocation;
 
   const AppColors({
     required this.primary,
@@ -21,6 +24,9 @@ class AppColors {
     required this.text,
     required this.secondaryText,
     required this.border,
+    required this.animatedBorder,
+    required this.seconderyBackground,
+    required this.bgLocation,
   });
 }
 
@@ -29,21 +35,27 @@ const lightColors = AppColors(
   secondary: Color.fromARGB(255, 0, 49, 44),
   accent: Colors.teal,
   background: Color(0xFFF8FAFC),
+  seconderyBackground: Colors.white,
   surface: Color(0xFFFFFFFF),
   text: Color(0xFF0F172A),
   secondaryText: Color(0xFF64748B),
   border: Color(0xFFE2E8F0),
+  animatedBorder:  Color(0xFF14B8A6),
+  bgLocation: Color.fromARGB(255, 235, 235, 235),
 );
 
 const darkColors = AppColors(
   primary: Color(0xFF14B8A6),
   secondary: Color(0xFF80CBC4),
   accent: Colors.tealAccent,
-  background: Color(0xFF121212),
+  background: Colors.black,
+  seconderyBackground: Color.fromARGB(255, 27, 27, 27),
   surface: Color(0xFF1E1E1E),
   text: Color(0xFFF8FAFC),
   secondaryText: Color(0xFF94A3B8),
   border: Color(0xFF333333),
+  animatedBorder: Colors.white,
+  bgLocation: Color.fromARGB(255, 35, 35, 35),
 );
 
 final appColorsProvider = Provider<AppColors>((ref) {

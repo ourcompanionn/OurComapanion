@@ -1,0 +1,4 @@
+enum SearchField {
+  pickup,
+ destination,
+}

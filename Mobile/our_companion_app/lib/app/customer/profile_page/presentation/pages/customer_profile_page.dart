@@ -1,0 +1,156 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:our_companion_app/app/customer/profile_page/presentation/widgets/profile_options.dart';
+import 'package:our_companion_app/app/shared/auth/presentation/provider/auth_provider.dart';
+import 'package:our_companion_app/core/constents/app_color.dart';
+
+import 'package:go_router/go_router.dart';
+import 'package:our_companion_app/core/providers/core_provider.dart';
+import 'package:our_companion_app/core/routes/app_routes.dart';
+
+class CustomerProfilePage extends ConsumerWidget {
+  const CustomerProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appColors = ref.watch(appColorsProvider);
+    return Scaffold(
+      backgroundColor: appColors.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'My Profile', 
+                style: GoogleFonts.poppins(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: appColors.secondary,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Center(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 54,
+                      backgroundColor: appColors.primary.withValues(alpha: 0.1),
+                      child: Icon(
+                        Icons.person,
+                        size: 54,
+                        color: appColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Welcome Customer',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: appColors.text,
+                      ),
+                    ),
+                    Text(
+                      'customer@example.com',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: appColors.secondaryText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+             BuildProfileOption(icon: Icons.person, title: 'Edit Profile', colores: appColors,),
+             BuildProfileOption(icon: Icons.notifications_none_outlined, title: 'Notifications', colores: appColors,),
+             BuildProfileOption(icon: Icons.shield_outlined, title: 'Privacy & Safety', colores: appColors,),
+            
+             BuildProfileOption(icon: Icons.help_outline_outlined, title: 'Support & FAQ', colores: appColors,),
+            const Divider(height: 32),
+             BuildProfileOption(icon: Icons.logout, title: 'Sign Out', colores: appColors,),
+          
+           
+            
+              
+              _buildProfileOption(
+                Icons.logout,
+                'Sign Out',
+                appColors,
+                textColor: Colors.redAccent,
+                iconColor: Colors.redAccent,
+               onTap: () async {
+  final shouldLogout = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Logout"),
+      content: const Text("Are you sure you want to sign out?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text("Logout"),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldLogout != true) return;
+
+  final storage = ref.read(secureStorageProvider);
+  final refreshToken = await storage.getRefreshToken();
+
+  if (refreshToken != null) {
+    await ref
+        .read(authControllerProvider.notifier)
+        .logout(refreshToken);
+  }
+
+  if (context.mounted) {
+    context.go(AppRoutes.roleSelect);
+  }
+},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileOption(
+    IconData icon,
+    String title,
+    AppColors appColors, {
+    Color? textColor,
+    Color? iconColor,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: (iconColor ?? appColors.primary).withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: iconColor ?? appColors.primary),
+      ),
+      title: Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: textColor ?? appColors.text,
+        ),
+      ),
+      trailing: Icon(Icons.chevron_right, color: appColors.secondaryText),
+    );
+  }
+} 
